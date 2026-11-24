@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <title>T-FIT LAB | Môi trường Học tập & Mô phỏng Dung sai – Lắp ghép ISO 286</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Three.js r128 for 3D Mechanical Fit Simulation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- QR Code Generator for Class Join Links -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+
+  <script src="js/tailwind-config.js"></script>
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-techslate-950 dark:text-slate-100 transition-colors duration-200">
+  <!-- ===================================================================== -->
+  <!-- LOGIN GATE OVERLAY: 1) Màn hình mở đầu  2) Cổng đăng nhập (RBAC)      -->
+  <!-- ===================================================================== -->
+  <div id="login-gate-overlay" class="tg-root fixed inset-0 z-[100] overflow-y-auto">
+
+    <!-- ============ MÀN HÌNH 1: LANDING ============ -->
+    <section id="gate-screen-landing" class="tg-screen tg-landing">
+      <div class="tg-grid"></div>
+      <canvas id="gate-canvas-landing" class="tg-canvas-landing" aria-hidden="true"></canvas>
+      <div class="tg-landing-inner">
+        <div class="tg-logo-frame"><div><img src="assets/logo.png" alt="Logo T-FIT LAB" /></div></div>
+        <h1 class="tg-title">T-FIT LAB</h1>
+        <div class="tg-pill">Interactive Tolerance &amp; Fit Learning Environment <span>•</span> <b>DNTU</b></div>
+        <div class="tg-stats">
+          <div class="tg-stat"><small>HOLE TOLERANCE</small><strong>H7 (+25 / 0 µm)</strong></div>
+          <div class="tg-stat"><small>SHAFT TOLERANCE</small><strong>g6 (-9 / -25 µm)</strong></div>
+          <div class="tg-stat"><small>CAD SIMULATION</small><strong class="is-green">2D / 3D WEBGL</strong></div>
+        </div>
+        <button type="button" class="tg-cta" onclick="gateEnter()">
+          VÀO CỔNG ĐĂNG NHẬP HỆ THỐNG
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ MÀN HÌNH 2: ĐĂNG NHẬP ============ -->
+    <section id="gate-screen-login" class="tg-screen tg-login is-off">
+      <div class="tg-login-wrap">
+
+        <!-- Cột trái: thương hiệu + mô phỏng CAD -->
+        <div class="tg-left">
+          <div class="tg-brandcard">
+            <img src="assets/logo.png" alt="Logo T-FIT LAB" />
+            <div>
+              <div class="tg-brand-title">T-FIT LAB <span class="tg-badge">DNTU</span></div>
+              <div class="tg-brand-sub">TECHNICAL FITTING &amp; ENGINEERING LAB</div>
+            </div>
+          </div>
+          <div class="tg-pill-sm"><i class="tg-dot"></i>Interactive Tolerance &amp; Fit Learning Environment • DNTU</div>
+          <div class="tg-hero-title" role="heading" aria-level="2">T-FIT LAB</div>
+          <p class="tg-hero-desc">Nền tảng đào tạo và mô phỏng kỹ thuật cơ khí chuyên sâu về dung sai – lắp ghép theo tiêu chuẩn quốc tế <b>ISO 286</b> dành cho sinh viên và giảng viên Trường Đại học Công nghệ Đồng Nai.</p>
+
+          <div class="tg-viewport"><canvas id="gate-canvas-login" aria-hidden="true"></canvas></div>
+          <div class="tg-viewport-cap" style="margin-top:auto;"><i class="tg-dot"></i><span>CAD ASSEMBLY VIEWPORT: <b>SHAFT-BEARING-GEAR SYSTEM</b> • TOLERANCE ZONE ANALYSIS</span></div>
+
+          <div class="tg-features">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="17" cy="15" r="3"/><path d="M8 3v1.5M8 13.5V15M3.5 6l1.3.8M11.2 11.2l1.3.8M3.5 12l1.3-.8M17 9v1.5M17 19.5V21M12.5 12l1.3.8M20.2 13.2l1.3.8"/></svg>MECHANICAL ENGINEERING</span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg>DIGITAL SIMULATION</span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v18h18"/><path d="M8 21v-3M12 21v-5M16 21v-3M20 21v-5M4 8h3M4 12h5M4 16h3"/></svg>ISO 286 LEARNING</span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 21M12 3l7 18M8 15h8"/><circle cx="12" cy="3" r="1.2"/></svg>2D / 3D TECHNICAL LAB</span>
+          </div>
+        </div>
+
+        <!-- Cột phải: card xác thực -->
+        <div class="tg-card">
+          <div class="tg-card-top">
+            <span class="tg-eyebrow">AUTH GATEWAY • RBAC</span>
+            <span class="tg-sysinit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-6-6-6M12 19h8"/></svg>System Init</span>
+          </div>
+
+          <!-- Panel: Đăng nhập -->
+          <div id="gate-panel-login">
+            <h2>CHÀO MỪNG ĐẾN VỚI T-FIT LAB</h2>
+            <p class="tg-sub">Đăng nhập để tiếp tục hành trình học tập và nghiên cứu kỹ thuật.</p>
+
+            <form id="gate-login-form" onsubmit="handleGateLogin(event)" class="tg-form">
+              <label class="tg-label" for="gate-identifier">Email hoặc mã số sinh viên <em>*</em></label>
+              <input id="gate-identifier" type="text" required autocomplete="username" placeholder="sv.nguyenminh@dntu.edu.vn" class="tg-input" />
+
+              <div class="tg-row">
+                <label class="tg-label" for="gate-password">Mật khẩu <em>*</em></label>
+                <button type="button" class="tg-link" onclick="gateForgotPassword()">Quên mật khẩu?</button>
+              </div>
+              <div class="tg-pw">
+                <input id="gate-password" type="password" required autocomplete="current-password" placeholder="••••••" class="tg-input" />
+                <button type="button" onclick="gateTogglePw()" aria-label="Hiện / ẩn mật khẩu">
+                  <svg id="gate-eye-on" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg id="gate-eye-off" class="is-off" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10.4 10.4 0 0 1 12 19c-6.4 0-10-7-10-7a18 18 0 0 1 4.1-4.9M9.9 5.2A9.7 9.7 0 0 1 12 5c6.4 0 10 7 10 7a18 18 0 0 1-2.2 3.2M1 1l22 22M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+                </button>
+              </div>
+
+              <div class="tg-row" style="margin-top:10px;">
+                <label class="tg-check"><input id="gate-remember" type="checkbox" checked />Ghi nhớ đăng nhập</label>
+                <span class="tg-auto">Auto-Role Detection</span>
+              </div>
+
+              <div id="gate-error-box" class="hidden tg-error"></div>
+              <button type="submit" class="tg-btn">ĐĂNG NHẬP</button>
+            </form>
+
+            <div class="tg-demo">
+              <span>Tài khoản mẫu (mật khẩu <code>123456</code>):</span>
+              <button type="button" onclick="fillGateDemo('admin@dntu.edu.vn')">Admin</button>
+              <button type="button" onclick="fillGateDemo('an.nv@dntu.edu.vn')">Giảng viên</button>
+              <button type="button" onclick="fillGateDemo('khoa.lm@dntu.edu.vn')">Sinh viên</button>
+            </div>
+
+            <div class="tg-divider"></div>
+            <p class="tg-foot">Chưa có tài khoản? <button type="button" class="tg-link" onclick="gateShowPanel('register')">Đăng ký ngay</button></p>
+            <div class="tg-legal">
+              <button type="button" onclick="showToast('Chính sách bảo mật đang được cập nhật.', 'info')">Chính sách bảo mật</button><span>•</span>
+              <button type="button" onclick="showToast('Điều khoản sử dụng đang được cập nhật.', 'info')">Điều khoản sử dụng</button>
+            </div>
+          </div>
+
+          <!-- Panel: Đăng ký sinh viên -->
+          <div id="gate-panel-register" class="is-off">
+            <h2>ĐĂNG KÝ SINH VIÊN</h2>
+            <p class="tg-sub">Tạo tài khoản sinh viên DNTU để vào hệ thống ngay.</p>
+            <form id="gate-register-form" onsubmit="handleGateRegister(event)" class="tg-form">
+              <input id="gate-reg-mssv" type="text" required placeholder="MSSV (VD: 231150199)" class="tg-input" />
+              <input id="gate-reg-name" type="text" required placeholder="Họ và tên đầy đủ" class="tg-input" style="font-family:'Inter',sans-serif;" />
+              <input id="gate-reg-email" type="email" required placeholder="Email sinh viên (@dntu.edu.vn)" class="tg-input" />
+              <input id="gate-reg-pass" type="password" minlength="6" required placeholder="Mật khẩu (tối thiểu 6 ký tự)" class="tg-input" />
+              <div id="gate-reg-error" class="hidden tg-error"></div>
+              <button type="submit" class="tg-btn is-green">Đăng ký &amp; Vào hệ thống</button>
+            </form>
+            <div class="tg-divider"></div>
+            <p class="tg-foot">Đã có tài khoản? <button type="button" class="tg-link" onclick="gateShowPanel('login')">Đăng nhập</button></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+
+  <!-- ===================================================================== -->
+  <!-- TOP STRUCTURAL HEADER (ĐỎ ĐÔ #5C0A14 + VÀNG KỸ THUẬT #F59E0B)         -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 bg-burgundy-900 text-white border-b border-burgundy-700/80 shadow-lg">
+    <div class="max-w-[1600px] mx-auto px-3 sm:px-5 h-16 flex items-center justify-between gap-3">
+      
+      <!-- Brand & Mobile Menu Toggle -->
+      <div class="flex items-center gap-3">
+        <button id="mobile-nav-btn" class="lg:hidden p-2 rounded-lg bg-burgundy-800 hover:bg-electricred-500 text-white transition" title="Mở điều hướng">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <div onclick="switchWorkspace('overview')" class="flex items-center gap-3 cursor-pointer group">
+          <img src="assets/logo.png" alt="Logo T-FIT LAB" class="h-11 w-auto drop-shadow-[0_0_6px_rgba(250,204,21,0.35)] group-hover:scale-105 transition" />
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold tracking-tight text-lg text-white">T-FIT <span class="text-techgold-400">LAB</span></span>
+              <span class="hidden sm:inline-block text-[10px] font-mono-tech uppercase px-1.5 py-0.5 rounded bg-burgundy-950 text-techgold-400 border border-techgold-500/40">ISO 286-1/2:2010</span>
+            </div>
+            <p class="text-[11px] text-rose-200/90 hidden sm:block leading-tight">Interactive Tolerance & Fit Learning Environment • DNTU</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Action Controls: Architecture Matrix, Role Switcher, Theme, Notifications -->
+      <div class="flex items-center gap-2 sm:gap-2.5">
+        <!-- Student / Lecturer Account Auth Pill -->
+        <button id="auth-account-btn" onclick="openAuthModal('login')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white text-xs font-bold shadow transition" title="Đăng nhập / Đăng ký tài khoản Sinh viên hoặc Giảng viên">
+          <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+          <span id="auth-account-label">Đăng nhập / Đăng ký SV</span>
+        </button>
+
+        <!-- 36-Subsystem Architecture & Test Runner Button -->
+        <button onclick="openArchitectureModal()" class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-burgundy-950 hover:bg-burgundy-800 border border-techgold-500/50 text-techgold-400 text-xs font-semibold transition" title="Kiến trúc 36 phân hệ & Bộ kiểm thử ISO 286">
+          <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+          <span>36 Phân hệ & Kiểm thử</span>
+        </button>
+
+        <!-- Role Switcher / Active Role Badge (Phân hệ 33) -->
+        <div id="role-switcher-wrap" class="flex items-center bg-burgundy-950 rounded-xl p-1 border border-burgundy-700">
+          <span class="text-[11px] text-rose-200 px-2 hidden sm:inline">Vai trò:</span>
+          <span id="role-static-badge" class="hidden bg-burgundy-800 text-techgold-400 text-xs font-semibold px-2.5 py-1 rounded-lg border border-burgundy-600">Sinh viên (DNTU)</span>
+          <select id="role-switcher" onchange="changeUserRole(this.value)" class="bg-burgundy-800 text-white text-xs font-semibold px-2.5 py-1 rounded-lg border border-burgundy-600 focus:outline-none focus:border-techgold-400 cursor-pointer" title="Chuyển chế độ xem giao diện theo quyền hạn">
+            <option value="STUDENT">Sinh viên (DNTU)</option>
+            <option value="LECTURER">Giảng viên Cơ khí</option>
+            <option value="ADMIN">Quản trị viên</option>
+          </select>
+        </div>
+
+        <!-- Dark / Light Mode Toggle -->
+        <button onclick="toggleTheme()" class="p-2 rounded-xl bg-burgundy-950 hover:bg-burgundy-800 border border-burgundy-700 text-techgold-400 transition" title="Chuyển chế độ Sáng / Tối">
+          <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Notifications Button (Phân hệ 35) -->
+        <button onclick="toggleNotifications()" class="relative p-2 rounded-xl bg-burgundy-950 hover:bg-burgundy-800 border border-burgundy-700 text-white transition" title="Thông báo học tập & hệ thống">
+          <i data-lucide="bell" class="w-4 h-4"></i>
+          <span id="notif-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-electricred-500 text-[10px] font-bold flex items-center justify-center">3</span>
+        </button>
+
+        <!-- Logout Button (Top-Right Header) -->
+        <button id="header-logout-btn" onclick="logoutCurrentUser()" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl bg-burgundy-950 hover:bg-electricred-500 border border-rose-500/60 text-rose-100 hover:text-white text-xs font-bold shadow transition" title="Đăng xuất khỏi hệ thống">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Đăng xuất</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- 5 MAIN WORKSPACES NAVIGATION BAR                                    -->
+    <!-- =================================================================== -->
+    <nav id="main-workspace-nav" class="bg-burgundy-950/95 border-t border-burgundy-800/80 overflow-x-auto">
+      <div class="max-w-[1600px] mx-auto px-3 sm:px-5 flex items-center gap-1.5 py-1.5 min-w-max">
+        <button data-ws="overview" onclick="switchWorkspace('overview')" class="ws-tab active flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          <span>TỔNG QUAN</span>
+        </button>
+        <button data-ws="learn" onclick="switchWorkspace('learn')" class="ws-tab flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>01. LEARN • HỌC TẬP</span>
+        </button>
+        <button data-ws="engineer" onclick="switchWorkspace('engineer')" class="ws-tab flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
+          <i data-lucide="calculator" class="w-4 h-4"></i>
+          <span>02. ENGINEER • KỸ THUẬT ISO</span>
+        </button>
+        <button data-ws="lab" onclick="switchWorkspace('lab')" class="ws-tab flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
+          <i data-lucide="box" class="w-4 h-4"></i>
+          <span>03. VIRTUAL LAB • MÔ PHỎNG 2D/3D</span>
+        </button>
+        <button data-ws="studio" onclick="switchWorkspace('studio')" class="ws-tab flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+          <span>04. CONTENT STUDIO • HỌC LIỆU</span>
+        </button>
+        <button data-ws="analytics" onclick="switchWorkspace('analytics')" class="ws-tab flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
+          <i data-lucide="activity" class="w-4 h-4"></i>
+          <span>05. ANALYTICS • CHẨN ĐOÁN & QUẢN TRỊ</span>
+        </button>
+        <button data-ws="classroom" onclick="switchWorkspace('classroom')" class="ws-tab flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition border border-techgold-500/40">
+          <i data-lucide="users" class="w-4 h-4 text-techgold-400"></i>
+          <span>06. CLASSROOM • LỚP HỌC (LMS)</span>
+          <span id="nav-class-count-badge" class="px-1.5 py-0.2 rounded-full bg-techgold-500 text-slate-950 font-mono-tech text-[10px] font-extrabold">0</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- NOTIFICATIONS DROPDOWN PANEL (PHÂN HỆ 35)                             -->
+  <!-- ===================================================================== -->
+  <div id="notifications-panel" class="hidden fixed right-4 top-20 z-50 w-80 sm:w-96 bg-white dark:bg-techslate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <div class="bg-burgundy-900 text-white px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="bell-ring" class="w-4 h-4 text-techgold-400"></i>
+        <span class="font-semibold text-sm">Thông báo & Nhắc nhở Học tập</span>
+      </div>
+      <button onclick="toggleNotifications()" class="text-rose-200 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <div id="notifications-list" class="divide-y divide-slate-100 dark:divide-slate-800 max-h-80 overflow-y-auto text-sm"></div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN APPLICATION CONTAINER                                            -->
+  <!-- ===================================================================== -->
+  <main class="max-w-[1600px] mx-auto px-3 sm:px-5 py-5">
+
+    <!-- =================================================================== -->
+    <!-- WORKSPACE 0: OVERVIEW / DASHBOARD                                   -->
+    <!-- =================================================================== -->
+    <section id="ws-overview" class="workspace-view space-y-6">
+      <!-- Hero Engineering Banner -->
+      <div class="rounded-2xl bg-gradient-to-r from-burgundy-950 via-burgundy-900 to-techslate-900 text-white p-6 sm:p-8 border border-burgundy-700 shadow-xl relative overflow-hidden">
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-8 space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-burgundy-950/90 border border-techgold-500/50 text-techgold-400 text-xs font-mono-tech">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>NGUỒN DỮ LIỆU XÁC MINH: ISO 286-1:2010 & ISO 286-2:2010 • ĐH CÔNG NGHỆ ĐỒNG NAI (DNTU)</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
+              T-FIT LAB <span class="text-techgold-400">— Beyond Tolerance Calculation</span>
+            </h1>
+            <p class="text-rose-100/90 text-sm sm:text-base max-w-3xl leading-relaxed">
+              Môi trường học tập, tính toán kỹ thuật, mô phỏng miền dung sai 2D/3D, biên soạn học liệu Word/PDF và chẩn đoán lỗi sai chuyên sâu cho học phần <strong>Dung sai – Lắp ghép cơ khí</strong>. Toàn bộ 36 phân hệ sử dụng chung một động cơ tính toán ISO 286 đã kiểm chứng.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-3">
+              <button onclick="switchWorkspace('lab')" class="px-4 py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-semibold text-sm flex items-center gap-2 shadow-lg transition">
+                <i data-lucide="box" class="w-4 h-4"></i>
+                <span>Mở Phòng thí nghiệm 2D/3D</span>
+              </button>
+              <button onclick="switchWorkspace('engineer')" class="px-4 py-2.5 rounded-xl bg-techgold-500 hover:bg-techgold-600 text-slate-950 font-bold text-sm flex items-center gap-2 shadow-lg transition">
+                <i data-lucide="calculator" class="w-4 h-4"></i>
+                <span>Tra cứu & Tính toán ISO 286</span>
+              </button>
+              <button onclick="openArchitectureModal()" class="px-4 py-2.5 rounded-xl bg-burgundy-950/90 hover:bg-burgundy-800 text-white border border-burgundy-600 font-semibold text-sm flex items-center gap-2 transition">
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-techgold-400"></i>
+                <span>Kiểm thử độ chính xác ISO 286</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Live Fit Widget inside Hero -->
+          <div class="lg:col-span-4 bg-techslate-950/90 border border-techgold-500/40 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span class="text-xs font-mono-tech uppercase text-techgold-400 font-semibold">Mối ghép đang kích hoạt</span>
+              <span id="hero-fit-badge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-fitgreen text-emerald-200">LẮP LỎNG</span>
+            </div>
+            <div class="flex items-baseline justify-between">
+              <div id="hero-fit-designation" class="text-2xl font-mono-tech font-extrabold text-white">Ø40 H7/g6</div>
+              <div id="hero-fit-system" class="text-xs text-slate-400">Hệ thống lỗ cơ sở</div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs font-mono-tech bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+              <div>
+                <span class="text-slate-400 block">Lỗ (ES / EI):</span>
+                <span id="hero-hole-dev" class="text-techgold-400 font-semibold">+25 / 0 µm</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">Trục (es / ei):</span>
+                <span id="hero-shaft-dev" class="text-sky-400 font-semibold">-9 / -25 µm</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">Smax (Hở lớn nhất):</span>
+                <span id="hero-smax" class="text-emerald-400 font-semibold">+50 µm</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">Smin (Hở nhỏ nhất):</span>
+                <span id="hero-smin" class="text-emerald-400 font-semibold">+9 µm</span>
+              </div>
+            </div>
+            <button onclick="switchWorkspace('lab')" class="w-full py-2 rounded-xl bg-burgundy-800 hover:bg-burgundy-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <span>Phân tích trực quan 2D & 3D mối ghép này</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 Workspaces Quick Launch Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+        <div onclick="switchWorkspace('learn')" class="group cursor-pointer rounded-2xl bg-white dark:bg-techslate-900 p-5 border border-slate-200 dark:border-slate-800 hover:border-burgundy-700 dark:hover:border-techgold-500 shadow-sm hover:shadow-md transition">
+          <div class="w-10 h-10 rounded-xl bg-burgundy-900 text-techgold-400 flex items-center justify-center mb-3 group-hover:scale-105 transition">
+            <i data-lucide="book-open" class="w-5 h-5"></i>
+          </div>
+          <div class="text-[11px] font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">KHÔNG GIAN 01 • PHÂN HỆ 01–04</div>
+          <h3 class="font-bold text-base mt-0.5">LEARN – Học tập</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Thư viện lý thuyết ISO 286, thuật ngữ Việt–Anh, bài giảng tương tác, kiểm tra và nhật ký thực hành.</p>
+        </div>
+
+        <div onclick="switchWorkspace('engineer')" class="group cursor-pointer rounded-2xl bg-white dark:bg-techslate-900 p-5 border border-slate-200 dark:border-slate-800 hover:border-burgundy-700 dark:hover:border-techgold-500 shadow-sm hover:shadow-md transition">
+          <div class="w-10 h-10 rounded-xl bg-burgundy-900 text-techgold-400 flex items-center justify-center mb-3 group-hover:scale-105 transition">
+            <i data-lucide="calculator" class="w-5 h-5"></i>
+          </div>
+          <div class="text-[11px] font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">KHÔNG GIAN 02 • PHÂN HỆ 05–10</div>
+          <h3 class="font-bold text-base mt-0.5">ENGINEER – Kỹ thuật</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Tra cứu bảng ISO 286-1/2, động cơ tính dung sai µm/mm, trợ lý chọn lắp ghép và so sánh 4 phương án.</p>
+        </div>
+
+        <div onclick="switchWorkspace('lab')" class="group cursor-pointer rounded-2xl bg-white dark:bg-techslate-900 p-5 border border-slate-200 dark:border-slate-800 hover:border-burgundy-700 dark:hover:border-techgold-500 shadow-sm hover:shadow-md transition">
+          <div class="w-10 h-10 rounded-xl bg-electricred-500 text-white flex items-center justify-center mb-3 group-hover:scale-105 transition">
+            <i data-lucide="box" class="w-5 h-5"></i>
+          </div>
+          <div class="text-[11px] font-mono-tech text-electricred-600 dark:text-techgold-400 font-bold">KHÔNG GIAN 03 • PHÂN HỆ 11–16</div>
+          <h3 class="font-bold text-base mt-0.5">VIRTUAL LAB – Mô phỏng</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Thí nghiệm thay đổi thông số, biểu đồ miền dung sai 2D SVG, mô hình lắp ghép 3D & chuỗi kích thước.</p>
+        </div>
+
+        <div onclick="switchWorkspace('studio')" class="group cursor-pointer rounded-2xl bg-white dark:bg-techslate-900 p-5 border border-slate-200 dark:border-slate-800 hover:border-burgundy-700 dark:hover:border-techgold-500 shadow-sm hover:shadow-md transition">
+          <div class="w-10 h-10 rounded-xl bg-burgundy-900 text-techgold-400 flex items-center justify-center mb-3 group-hover:scale-105 transition">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+          </div>
+          <div class="text-[11px] font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">KHÔNG GIAN 04 • PHÂN HỆ 17–26</div>
+          <h3 class="font-bold text-base mt-0.5">CONTENT STUDIO – Học liệu</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Sinh bài tập & đề kiểm tra tự động, lời giải từng bước, phiếu thực hành, rubric & xuất Word/PDF.</p>
+        </div>
+
+        <div onclick="switchWorkspace('analytics')" class="group cursor-pointer rounded-2xl bg-white dark:bg-techslate-900 p-5 border border-slate-200 dark:border-slate-800 hover:border-burgundy-700 dark:hover:border-techgold-500 shadow-sm hover:shadow-md transition">
+          <div class="w-10 h-10 rounded-xl bg-burgundy-900 text-techgold-400 flex items-center justify-center mb-3 group-hover:scale-105 transition">
+            <i data-lucide="activity" class="w-5 h-5"></i>
+          </div>
+          <div class="text-[11px] font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">KHÔNG GIAN 05 • PHÂN HỆ 27–36</div>
+          <h3 class="font-bold text-base mt-0.5">ANALYTICS – Chẩn đoán</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Chẩn đoán nguyên nhân lỗi sai tính toán, biểu đồ radar 9 năng lực sinh viên, quản lý lớp & CSDL.</p>
+        </div>
+      </div>
+
+      <!-- Classroom Connection Quick Banner (Student & Lecturer Portal Bridge) -->
+      <div class="rounded-2xl bg-white dark:bg-techslate-900 p-5 border-2 border-burgundy-800/30 dark:border-techgold-500/30 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div class="flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-burgundy-900 text-techgold-400 flex items-center justify-center shrink-0">
+            <i data-lucide="qr-code" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-mono-tech font-bold text-electricred-600 dark:text-techgold-400">HỆ THỐNG KẾT NỐI GIẢNG VIÊN – SINH VIÊN DNTU</span>
+              <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-emerald-950/15 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-bold">ClassJoinCode & QR</span>
+            </div>
+            <h3 class="font-bold text-base mt-0.5">Cổng Lớp học Trực tuyến: Tạo lớp, Cấp mã tham gia & Nộp bài ISO 286</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">Giảng viên tạo lớp và phát hành mã tham gia (VD: <code class="font-mono-tech font-bold">TFIT-8K29Q</code>) kèm QR; Sinh viên đăng ký tài khoản cá nhân để nhập mã, nhận bài tập và theo dõi điểm số.</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+          <button onclick="openAuthModal('register')" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-bold flex items-center gap-1.5 transition">
+            <i data-lucide="user-plus" class="w-4 h-4 text-burgundy-700 dark:text-techgold-400"></i>
+            <span>Đăng ký Tài khoản SV</span>
+          </button>
+          <button onclick="openJoinClassModal()" class="px-4 py-2 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white text-xs font-bold flex items-center gap-1.5 shadow transition">
+            <i data-lucide="key-round" class="w-4 h-4"></i>
+            <span>+ Nhập Mã Tham Gia Lớp</span>
+          </button>
+          <button onclick="switchWorkspace('classroom')" class="px-4 py-2 rounded-xl bg-burgundy-900 hover:bg-burgundy-800 text-techgold-400 text-xs font-bold flex items-center gap-1.5 transition">
+            <span>Mở Cổng Lớp học →</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Saved Configurations & Role-Specific Summary -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-7 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-base flex items-center gap-2">
+                <i data-lucide="bookmark" class="w-4 h-4 text-burgundy-700 dark:text-techgold-400"></i>
+                <span>Cấu hình Lắp ghép Kỹ thuật Đã Lưu (Source of Truth)</span>
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Nhấp để nạp trực tiếp vào Động cơ tính toán và Phòng thí nghiệm 2D/3D</p>
+            </div>
+            <button onclick="switchWorkspace('engineer')" class="text-xs font-semibold text-burgundy-700 dark:text-techgold-400 hover:underline">Quản lý tất cả →</button>
+          </div>
+          <div id="overview-saved-fits" class="space-y-2.5"></div>
+        </div>
+
+        <div class="lg:col-span-5 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-base flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+              <span>Trạng thái Hệ thống & Kiểm định Kỹ thuật</span>
+            </h3>
+            <span id="role-badge-display" class="text-xs font-mono-tech px-2.5 py-1 rounded-lg bg-burgundy-900 text-techgold-400 font-semibold">STUDENT</span>
+          </div>
+          <div class="space-y-2.5 text-xs">
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <span class="font-medium">Tiêu chuẩn tra cứu lõi</span>
+              <span class="font-mono-tech font-bold text-emerald-700 dark:text-emerald-400">ISO 286-1:2010 & 286-2:2010</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <span class="font-medium">Phạm vi kích thước danh nghĩa</span>
+              <span class="font-mono-tech font-bold">0 &lt; D ≤ 500 mm (13 khoảng chuẩn)</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <span class="font-medium">Độ chính xác số học</span>
+              <span class="font-mono-tech font-bold">Số nguyên µm (Không sai số dấu phẩy động)</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <span class="font-medium">Trạng thái 36 phân hệ chức năng</span>
+              <button onclick="openArchitectureModal()" class="text-electricred-600 dark:text-techgold-400 font-bold underline">Xem ma trận kiến trúc</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- WORKSPACE 01: LEARN – HỆ THỐNG HỌC TẬP (PHÂN HỆ 01–04)              -->
+    <!-- =================================================================== -->
+    <section id="ws-learn" class="workspace-view hidden space-y-5">
+      <!-- Sub-navigation for LEARN -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-techslate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <div class="flex flex-wrap gap-1.5">
+          <button onclick="switchSubTab('learn', 'library')" class="learn-subtab active px-3.5 py-2 rounded-xl text-xs font-bold transition">01. Thư viện Kiến thức & Thuật ngữ</button>
+          <button onclick="switchSubTab('learn', 'lessons')" class="learn-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">02. Bài giảng Tương tác</button>
+          <button onclick="switchSubTab('learn', 'quiz')" class="learn-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">03. Kiểm tra Kiến thức</button>
+          <button onclick="switchSubTab('learn', 'journal')" class="learn-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">04. Nhật ký Học tập & Thực hành</button>
+        </div>
+        <div class="text-xs font-mono-tech text-slate-500 dark:text-slate-400">
+          Tiến độ học phần: <span id="learn-progress-text" class="font-bold text-burgundy-700 dark:text-techgold-400">2/5 chuyên đề hoàn thành</span>
+        </div>
+      </div>
+
+      <!-- Phân hệ 01: Knowledge Library -->
+      <div id="learn-panel-library" class="learn-panel grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-4 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm">Danh mục Chuyên đề ISO 286</h3>
+            <span class="text-[11px] font-mono-tech px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">Phân hệ 01</span>
+          </div>
+          <input id="kb-search" oninput="renderKnowledgeList()" type="text" placeholder="Lọc lý thuyết, công thức, ký hiệu..." class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-burgundy-700" />
+          <div id="kb-topic-list" class="space-y-2 max-h-[520px] overflow-y-auto"></div>
+        </div>
+        <div id="kb-article-view" class="lg:col-span-8 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-5">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Phân hệ 02: Interactive Lessons -->
+      <div id="learn-panel-lessons" class="learn-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-4 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-3">
+          <h3 class="font-bold text-sm">Chương trình Bài giảng Tương tác</h3>
+          <div id="lesson-list" class="space-y-2"></div>
+        </div>
+        <div id="lesson-viewer" class="lg:col-span-8 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-5"></div>
+      </div>
+
+      <!-- Phân hệ 03: Knowledge Assessment Quiz -->
+      <div id="learn-panel-quiz" class="learn-panel hidden bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-mono-tech text-electricred-600 dark:text-techgold-400 font-bold">PHÂN HỆ 03 • ĐÁNH GIÁ & CHẨN ĐOÁN TỰ ĐỘNG</span>
+            <h3 class="text-lg font-bold">Bài Kiểm tra Tổng hợp Dung sai & Lắp ghép ISO 286</h3>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="generateInteractiveQuiz()" class="px-3.5 py-2 rounded-xl bg-burgundy-900 hover:bg-burgundy-800 text-white text-xs font-semibold flex items-center gap-1.5">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Tạo bộ câu hỏi mới (ISO Verified)</span>
+            </button>
+          </div>
+        </div>
+        <div id="quiz-container" class="space-y-5"></div>
+      </div>
+
+      <!-- Phân hệ 04: Learning & Practice Journal -->
+      <div id="learn-panel-journal" class="learn-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-5 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <h3 class="font-bold text-base flex items-center gap-2">
+            <i data-lucide="pen-tool" class="w-4 h-4 text-burgundy-700 dark:text-techgold-400"></i>
+            <span>Ghi nhận Nhật ký Thực hành & Nhận xét Kỹ thuật</span>
+          </h3>
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="font-semibold block mb-1">Chủ đề / Cấu hình thí nghiệm liên quan</label>
+              <input id="journal-title" type="text" placeholder="VD: Khảo sát lắp trung gian Ø50 H7/k6 vs H7/m6" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700" />
+            </div>
+            <div>
+              <label class="font-semibold block mb-1">Nội dung quan sát & Kết luận kỹ thuật</label>
+              <textarea id="journal-note" rows="4" placeholder="Ghi lại nhận xét về sự thay đổi Smax, Smin khi nâng cấp chính xác từ IT7 lên IT6..." class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700"></textarea>
+            </div>
+            <button onclick="addJournalEntry()" class="w-full py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold text-xs transition">
+              Lưu vào Hồ sơ Sản phẩm Học tập Cá nhân
+            </button>
+          </div>
+        </div>
+        <div class="lg:col-span-7 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+          <h3 class="font-bold text-base">Lịch sử Hoạt động & Hồ sơ Thực hành Cá nhân (Phân hệ 04)</h3>
+          <div id="journal-entries-list" class="space-y-3 max-h-[450px] overflow-y-auto"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- WORKSPACE 02: ENGINEER – CÔNG CỤ KỸ THUẬT (PHÂN HỆ 05–10)           -->
+    <!-- =================================================================== -->
+    <section id="ws-engineer" class="workspace-view hidden space-y-5">
+      <!-- Sub-navigation for ENGINEER -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-techslate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <div class="flex flex-wrap gap-1.5">
+          <button onclick="switchSubTab('engineer', 'calculator')" class="engineer-subtab active px-3.5 py-2 rounded-xl text-xs font-bold transition">06. Động cơ Tính toán Dung sai</button>
+          <button onclick="switchSubTab('engineer', 'iso-lookup')" class="engineer-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">05. Tra cứu & Kiểm định ISO 286</button>
+          <button onclick="switchSubTab('engineer', 'selector')" class="engineer-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">07. Trợ lý Lựa chọn Kiểu lắp</button>
+          <button onclick="switchSubTab('engineer', 'compare')" class="engineer-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">08. So sánh Phương án (2–4)</button>
+          <button onclick="switchSubTab('engineer', 'visualize')" class="engineer-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">09 & 10. Trực quan hóa & Kho Lưu trữ</button>
+        </div>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-slate-500">Đơn vị hiển thị:</span>
+          <select id="global-unit-select" onchange="updateGlobalUnit(this.value)" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 font-mono-tech font-bold border border-slate-300 dark:border-slate-700">
+            <option value="both">Cả hai (µm & mm)</option>
+            <option value="um">Micromet (µm)</option>
+            <option value="mm">Milimet (mm)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Phân hệ 06: Tolerance Calculation Engine -->
+      <div id="engineer-panel-calculator" class="engineer-panel grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Input Parameters Panel -->
+        <div class="lg:col-span-4 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div>
+              <span class="text-[11px] font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 06 • SOURCE OF TRUTH</span>
+              <h3 class="font-bold text-base">Thông số Mối ghép ISO 286</h3>
+            </div>
+            <button onclick="resetToDefaultFit()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 font-medium">Đặt lại</button>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="font-bold block mb-1">Kích thước danh nghĩa D = d (mm) <span class="text-slate-400 font-normal">(0 &lt; D ≤ 500)</span></label>
+              <div class="flex gap-2">
+                <input id="calc-nominal" type="number" step="0.1" min="0.1" max="500" value="40" onchange="handleEngineerCalcChange()" class="flex-1 px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold text-sm focus:outline-none focus:border-electricred-500" />
+                <select onchange="if(this.value){document.getElementById('calc-nominal').value=this.value; handleEngineerCalcChange();}" class="px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono-tech">
+                  <option value="">Mẫu nhanh</option>
+                  <option value="12">Ø12 mm</option>
+                  <option value="25">Ø25 mm</option>
+                  <option value="40" selected>Ø40 mm</option>
+                  <option value="65">Ø65 mm</option>
+                  <option value="100">Ø100 mm</option>
+                  <option value="160">Ø160 mm</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <div class="p-3 rounded-xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-300/60 dark:border-amber-700/40 space-y-2">
+                <div class="font-bold text-amber-900 dark:text-techgold-400 flex items-center gap-1">
+                  <i data-lucide="circle-dot" class="w-3.5 h-3.5"></i>
+                  <span>LỖ (HOLE)</span>
+                </div>
+                <div>
+                  <label class="block text-[11px] mb-1">Sai lệch cơ bản Lỗ</label>
+                  <select id="calc-hole-zone" onchange="handleEngineerCalcChange()" class="w-full px-2.5 py-1.5 rounded-lg bg-white dark:bg-techslate-900 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold">
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+                    <option value="H" selected>H (Cơ sở)</option>
+                    <option value="JS">JS</option>
+                    <option value="K">K</option>
+                    <option value="M">M</option>
+                    <option value="N">N</option>
+                    <option value="P">P</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[11px] mb-1">Cấp chính xác IT Lỗ</label>
+                  <select id="calc-hole-it" onchange="handleEngineerCalcChange()" class="w-full px-2.5 py-1.5 rounded-lg bg-white dark:bg-techslate-900 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold">
+                    <option value="6">IT6</option>
+                    <option value="7" selected>IT7</option>
+                    <option value="8">IT8</option>
+                    <option value="9">IT9</option>
+                    <option value="11">IT11</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="p-3 rounded-xl bg-sky-50/70 dark:bg-sky-950/20 border border-sky-300/60 dark:border-sky-700/40 space-y-2">
+                <div class="font-bold text-sky-900 dark:text-sky-400 flex items-center gap-1">
+                  <i data-lucide="cylinder" class="w-3.5 h-3.5"></i>
+                  <span>TRỤC (SHAFT)</span>
+                </div>
+                <div>
+                  <label class="block text-[11px] mb-1">Sai lệch cơ bản Trục</label>
+                  <select id="calc-shaft-zone" onchange="handleEngineerCalcChange()" class="w-full px-2.5 py-1.5 rounded-lg bg-white dark:bg-techslate-900 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold">
+                    <option value="c">c</option>
+                    <option value="d">d</option>
+                    <option value="e">e</option>
+                    <option value="f">f</option>
+                    <option value="g" selected>g</option>
+                    <option value="h">h (Cơ sở)</option>
+                    <option value="js">js</option>
+                    <option value="k">k</option>
+                    <option value="m">m</option>
+                    <option value="n">n</option>
+                    <option value="p">p</option>
+                    <option value="r">r</option>
+                    <option value="s">s</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[11px] mb-1">Cấp chính xác IT Trục</label>
+                  <select id="calc-shaft-it" onchange="handleEngineerCalcChange()" class="w-full px-2.5 py-1.5 rounded-lg bg-white dark:bg-techslate-900 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold">
+                    <option value="5">IT5</option>
+                    <option value="6" selected>IT6</option>
+                    <option value="7">IT7</option>
+                    <option value="8">IT8</option>
+                    <option value="9">IT9</option>
+                    <option value="11">IT11</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick ISO Preferred Fits Presets -->
+            <div>
+              <label class="font-semibold block mb-1.5 text-slate-600 dark:text-slate-400">Tổ hợp ưu tiên theo ISO 286-2:</label>
+              <div class="flex flex-wrap gap-1.5">
+                <button onclick="applyFitPreset(40, 'H', 7, 'f', 7)" class="px-2 py-1 rounded-lg bg-emerald-950/10 dark:bg-emerald-900/30 border border-emerald-600/30 text-[11px] font-mono-tech font-semibold hover:bg-emerald-600 hover:text-white transition">H7/f7 (Lỏng quay)</button>
+                <button onclick="applyFitPreset(40, 'H', 7, 'g', 6)" class="px-2 py-1 rounded-lg bg-emerald-950/10 dark:bg-emerald-900/30 border border-emerald-600/30 text-[11px] font-mono-tech font-semibold hover:bg-emerald-600 hover:text-white transition">H7/g6 (Lỏng trượt)</button>
+                <button onclick="applyFitPreset(40, 'H', 7, 'h', 6)" class="px-2 py-1 rounded-lg bg-emerald-950/10 dark:bg-emerald-900/30 border border-emerald-600/30 text-[11px] font-mono-tech font-semibold hover:bg-emerald-600 hover:text-white transition">H7/h6 (Định vị)</button>
+                <button onclick="applyFitPreset(40, 'H', 7, 'k', 6)" class="px-2 py-1 rounded-lg bg-amber-950/10 dark:bg-amber-900/30 border border-amber-600/30 text-[11px] font-mono-tech font-semibold hover:bg-amber-600 hover:text-white transition">H7/k6 (Trung gian)</button>
+                <button onclick="applyFitPreset(40, 'H', 7, 'n', 6)" class="px-2 py-1 rounded-lg bg-amber-950/10 dark:bg-amber-900/30 border border-amber-600/30 text-[11px] font-mono-tech font-semibold hover:bg-amber-600 hover:text-white transition">H7/n6 (Trung gian chặt)</button>
+                <button onclick="applyFitPreset(40, 'H', 7, 'p', 6)" class="px-2 py-1 rounded-lg bg-rose-950/10 dark:bg-rose-900/30 border border-rose-600/30 text-[11px] font-mono-tech font-semibold hover:bg-rose-600 hover:text-white transition">H7/p6 (Ép nhẹ)</button>
+                <button onclick="applyFitPreset(40, 'H', 7, 's', 6)" class="px-2 py-1 rounded-lg bg-rose-950/10 dark:bg-rose-900/30 border border-rose-600/30 text-[11px] font-mono-tech font-semibold hover:bg-rose-600 hover:text-white transition">H7/s6 (Ép nặng)</button>
+              </div>
+            </div>
+
+            <div class="pt-2 flex flex-col gap-2">
+              <button onclick="saveCurrentFitConfig()" class="w-full py-2.5 rounded-xl bg-burgundy-900 hover:bg-burgundy-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition">
+                <i data-lucide="bookmark-plus" class="w-4 h-4 text-techgold-400"></i>
+                <span>Lưu cấu hình vào Kho Kỹ thuật</span>
+              </button>
+              <button onclick="switchWorkspace('lab')" class="w-full py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold text-xs flex items-center justify-center gap-2 transition">
+                <i data-lucide="box" class="w-4 h-4"></i>
+                <span>Gửi dữ liệu sang Mô phỏng 2D/3D</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Step-by-Step Calculation Output -->
+        <div id="calc-result-container" class="lg:col-span-8 space-y-4">
+          <!-- Populated dynamically by renderCalculatorResult() -->
+        </div>
+      </div>
+
+      <!-- Phân hệ 05: ISO 286 Standard Lookup & Data Audit -->
+      <div id="engineer-panel-iso-lookup" class="engineer-panel hidden space-y-4">
+        <div class="bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div>
+              <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 05 • CƠ SỞ DỮ LIỆU TIÊU CHUẨN XÁC MINH</span>
+              <h3 class="text-lg font-bold">Bảng Tra cứu Sai lệch Giới hạn ISO 286-2:2010 & Cấp IT (ISO 286-1:2010)</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="iso-table-type" onchange="renderISOTable()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-bold">
+                <option value="it">Bảng 1: Dung sai tiêu chuẩn IT5 – IT11 (µm)</option>
+                <option value="hole">Bảng 2: Sai lệch giới hạn Lỗ thông dụng (H7, G7, F7, JS7, K7, M7, N7, P7)</option>
+                <option value="shaft">Bảng 3: Sai lệch giới hạn Trục thông dụng (h6, g6, f7, e8, d9, js6, k6, m6, n6, p6, s6)</option>
+              </select>
+              <button onclick="runISODatabaseIntegrityCheck()" class="px-3 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span>Kiểm định tính nhất quán CSDL</span>
+              </button>
+            </div>
+          </div>
+          <div id="iso-audit-banner" class="hidden p-3 rounded-xl bg-emerald-950/10 dark:bg-emerald-900/25 border border-emerald-600/40 text-xs"></div>
+          <div id="iso-table-wrapper" class="overflow-x-auto"></div>
+        </div>
+      </div>
+
+      <!-- Phân hệ 07: Fit Selection Assistant -->
+      <div id="engineer-panel-selector" class="engineer-panel hidden space-y-4">
+        <div class="bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <div class="border-b border-slate-200 dark:border-slate-800 pb-3">
+            <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 07 • TRỢ LÝ LỰA CHỌN KIỂU LẮP GHÉP</span>
+            <h3 class="text-lg font-bold">Tìm kiếm & Sàng lọc Tổ hợp Miền Dung sai Đạt Điều kiện Kỹ thuật</h3>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+            <div>
+              <label class="font-bold block mb-1">Kích thước danh nghĩa (mm)</label>
+              <input id="sel-nominal" type="number" value="40" min="1" max="500" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold" />
+            </div>
+            <div>
+              <label class="font-bold block mb-1">Kiểu lắp mong muốn</label>
+              <select id="sel-fit-type" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-semibold">
+                <option value="CLEARANCE">Lắp lỏng (Smin ≥ 0)</option>
+                <option value="TRANSITION">Lắp trung gian (Smin &lt; 0 &lt; Smax)</option>
+                <option value="INTERFERENCE">Lắp chặt (Smax ≤ 0)</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold block mb-1">Hệ thống lắp ghép</label>
+              <select id="sel-basis" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-semibold">
+                <option value="HOLE">Hệ thống lỗ cơ sở (H)</option>
+                <option value="SHAFT">Hệ thống trục cơ sở (h)</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold block mb-1">Giới hạn Smin tối thiểu (µm)</label>
+              <input id="sel-min-bound" type="number" value="5" placeholder="VD: 5 hoặc -30" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+            </div>
+            <div class="flex items-end">
+              <button onclick="runFitSelectionAssistant()" class="w-full py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                <i data-lucide="search-check" class="w-4 h-4"></i>
+                <span>Tìm phương án ISO</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-400/50 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2">
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+            <span><strong>Lưu ý kỹ thuật bắt buộc:</strong> Hệ thống chỉ lọc các tổ hợp thỏa mãn điều kiện hình học theo ISO 286-2:2010. Việc chốt phương án chế tạo cuối cùng đòi hỏi kỹ sư xem xét thêm tải trọng động, vật liệu, nhám bề mặt Ra, chế độ bôi trơn và giãn nở nhiệt vận hành.</span>
+          </div>
+
+          <div id="selector-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+        </div>
+      </div>
+
+      <!-- Phân hệ 08: Compare 2-4 Fit Alternatives -->
+      <div id="engineer-panel-compare" class="engineer-panel hidden space-y-4">
+        <div class="bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div>
+              <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 08 • ĐỐI SÁNH ĐA PHƯƠNG ÁN</span>
+              <h3 class="text-lg font-bold">So sánh Trực quan 2 đến 4 Phương án Lắp ghép trên Cùng Kích thước Danh nghĩa</h3>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <span>Kích thước D (mm):</span>
+              <input id="cmp-nominal" type="number" value="40" min="1" max="500" onchange="renderFitComparison()" class="w-20 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 font-mono-tech font-bold border border-slate-300 dark:border-slate-700" />
+              <button onclick="addComparisonSlot()" class="px-3 py-1.5 rounded-lg bg-burgundy-900 text-white font-semibold">+ Thêm phương án</button>
+            </div>
+          </div>
+          <div id="compare-slots-controls" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+          <div id="compare-svg-container" class="bg-slate-50 dark:bg-techslate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 overflow-x-auto"></div>
+          <div id="compare-table-container" class="overflow-x-auto"></div>
+        </div>
+      </div>
+
+      <!-- Phân hệ 09 & 10: Data Visualization & Saved Repository -->
+      <div id="engineer-panel-visualize" class="engineer-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-7 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 09 • PHÂN TÍCH ĐỒ THỊ TIÊU CHUẨN</span>
+              <h3 class="font-bold text-base">Biểu đồ Biến thiên Dung sai IT theo Khoảng Kích thước Danh nghĩa</h3>
+            </div>
+          </div>
+          <div id="it-progression-chart" class="w-full overflow-x-auto"></div>
+        </div>
+        <div class="lg:col-span-5 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+          <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 10 • QUẢN LÝ KẾT QUẢ</span>
+          <h3 class="font-bold text-base">Kho Cấu hình Kỹ thuật Đã Lưu</h3>
+          <div id="engineer-saved-list" class="space-y-2.5 max-h-[420px] overflow-y-auto"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- WORKSPACE 03: VIRTUAL LAB – PHÒNG THÍ NGHIỆM ẢO 2D/3D (PHÂN HỆ 11–16)-->
+    <!-- =================================================================== -->
+    <section id="ws-lab" class="workspace-view hidden space-y-4">
+      <!-- Sub-navigation for VIRTUAL LAB -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-techslate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <div class="flex flex-wrap gap-1.5">
+          <button onclick="switchSubTab('lab', 'workbench')" class="lab-subtab active px-3.5 py-2 rounded-xl text-xs font-bold transition">11–14. Phòng Thí nghiệm Tương tác 2D & 3D</button>
+          <button onclick="switchSubTab('lab', 'scenarios')" class="lab-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">15. Thí nghiệm Theo Kịch bản (8 bước)</button>
+          <button onclick="switchSubTab('lab', 'chain')" class="lab-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">16. Chuỗi Kích thước & Monte Carlo (Mở rộng)</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="lab-live-summary-pill" class="px-3 py-1 rounded-xl bg-burgundy-900 text-techgold-400 font-mono-tech text-xs font-bold">Ø40 H7/g6 • Lắp lỏng</span>
+        </div>
+      </div>
+
+      <!-- Phân hệ 11, 12, 13, 14: Interactive 2D & 3D Lab Workbench -->
+      <div id="lab-panel-workbench" class="lab-panel grid grid-cols-1 xl:grid-cols-12 gap-4">
+        
+        <!-- Left Control Column (Phân hệ 11: Interactive Parameter Controls & Hypothesis Mode) -->
+        <div class="xl:col-span-3 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
+            <span class="text-xs font-mono-tech font-bold text-burgundy-700 dark:text-techgold-400">BẢNG ĐIỀU KHIỂN THÔNG SỐ</span>
+            <button onclick="resetToDefaultFit()" class="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200">Đặt lại</button>
+          </div>
+
+          <!-- Interactive Nominal Diameter Slider & Input -->
+          <div class="space-y-1.5 text-xs">
+            <div class="flex justify-between font-bold">
+              <span>Kích thước danh nghĩa D:</span>
+              <span id="lab-d-val" class="font-mono-tech text-electricred-600 dark:text-techgold-400">40 mm</span>
+            </div>
+            <input id="lab-d-slider" type="range" min="3" max="250" step="1" value="40" oninput="syncLabInputs('slider')" class="w-full accent-electricred-500 cursor-pointer" />
+            <div class="flex gap-1.5">
+              <input id="lab-d-input" type="number" min="1" max="500" value="40" onchange="syncLabInputs('input')" class="w-24 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold" />
+              <span class="text-[11px] text-slate-500 self-center" id="lab-step-label">Khoảng: (30, 50] mm</span>
+            </div>
+          </div>
+
+          <!-- Hole & Shaft Interactive Selectors -->
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-1.5">
+              <span class="font-bold text-amber-800 dark:text-techgold-400 block">Miền Lỗ (Hole)</span>
+              <select id="lab-hole-zone" onchange="syncLabInputs('select')" class="w-full px-2 py-1 rounded-lg bg-white dark:bg-techslate-900 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold">
+                <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                <option value="H" selected>H</option><option value="JS">JS</option><option value="K">K</option>
+                <option value="M">M</option><option value="N">N</option><option value="P">P</option>
+              </select>
+              <select id="lab-hole-it" onchange="syncLabInputs('select')" class="w-full px-2 py-1 rounded-lg bg-white dark:bg-techslate-900 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold">
+                <option value="6">IT6</option><option value="7" selected>IT7</option><option value="8">IT8</option><option value="9">IT9</option><option value="11">IT11</option>
+              </select>
+            </div>
+            <div class="p-2.5 rounded-xl bg-sky-500/10 border border-sky-500/30 space-y-1.5">
+              <span class="font-bold text-sky-800 dark:text-sky-400 block">Miền Trục (Shaft)</span>
+              <select id="lab-shaft-zone" onchange="syncLabInputs('select')" class="w-full px-2 py-1 rounded-lg bg-white dark:bg-techslate-900 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold">
+                <option value="c">c</option><option value="d">d</option><option value="e">e</option><option value="f">f</option>
+                <option value="g" selected>g</option><option value="h">h</option><option value="js">js</option>
+                <option value="k">k</option><option value="m">m</option><option value="n">n</option><option value="p">p</option>
+                <option value="r">r</option><option value="s">s</option>
+              </select>
+              <select id="lab-shaft-it" onchange="syncLabInputs('select')" class="w-full px-2 py-1 rounded-lg bg-white dark:bg-techslate-900 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold">
+                <option value="5">IT5</option><option value="6" selected>IT6</option><option value="7">IT7</option><option value="8">IT8</option><option value="9">IT9</option><option value="11">IT11</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Live Calculated Readout Box -->
+          <div id="lab-metrics-box" class="p-3 rounded-xl bg-slate-900 text-white space-y-2 text-xs font-mono-tech border border-slate-700">
+            <!-- Populated dynamically -->
+          </div>
+
+          <!-- Chế độ khám phá: Đặt giả thuyết & Dự đoán (Phân hệ 11) -->
+          <div class="p-3 rounded-xl bg-burgundy-950/5 dark:bg-burgundy-950/40 border border-burgundy-700/30 space-y-2 text-xs">
+            <div class="font-bold text-burgundy-800 dark:text-techgold-400 flex items-center gap-1.5">
+              <i data-lucide="lightbulb" class="w-3.5 h-3.5"></i>
+              <span>Chế độ Khám phá: Dự đoán Nhanh</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300">Nếu giữ nguyên lỗ <strong>H7</strong> và đổi trục sang <strong>p6</strong>, mối ghép sẽ chuyển thành kiểu gì?</p>
+            <div class="flex gap-1.5">
+              <button onclick="checkLabPrediction('CLEARANCE')" class="flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-burgundy-700 font-semibold">Lỏng</button>
+              <button onclick="checkLabPrediction('TRANSITION')" class="flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-burgundy-700 font-semibold">Trung gian</button>
+              <button onclick="checkLabPrediction('INTERFERENCE')" class="flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-burgundy-700 font-semibold">Chặt</button>
+            </div>
+            <div id="lab-prediction-feedback" class="hidden text-[11px] p-2 rounded-lg"></div>
+          </div>
+        </div>
+
+        <!-- Center Column: Phân hệ 12 (Biểu đồ Miền Dung sai 2D SVG) -->
+        <div class="xl:col-span-4 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 flex flex-col justify-between space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
+            <div>
+              <span class="text-[10px] font-mono-tech font-bold text-burgundy-700 dark:text-techgold-400">PHÂN HỆ 12 • BIỂU ĐỒ 2D CHUẨN ISO</span>
+              <h3 class="font-bold text-sm">Sơ đồ Phân bố Miền Dung sai</h3>
+            </div>
+            <div class="flex items-center gap-1">
+              <button onclick="toggle2DLabels()" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold" title="Bật/tắt nhãn chi tiết">Nhãn</button>
+              <button onclick="export2DSVG()" class="px-2 py-1 rounded-lg bg-burgundy-900 text-white text-[11px] font-semibold" title="Tải xuống SVG">SVG</button>
+              <button onclick="export2DPNG()" class="px-2 py-1 rounded-lg bg-electricred-500 text-white text-[11px] font-semibold" title="Tải xuống PNG">PNG</button>
+            </div>
+          </div>
+
+          <div id="tolerance-2d-canvas-wrapper" class="flex-1 flex items-center justify-center cad-grid-bg rounded-xl border border-slate-200 dark:border-slate-800 p-2 min-h-[360px]">
+            <!-- High-precision SVG rendered dynamically -->
+          </div>
+
+          <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+            <span>Đường không (0) biểu thị kích thước danh nghĩa D = d</span>
+            <span class="font-mono-tech">Tỷ lệ tự động (µm)</span>
+          </div>
+        </div>
+
+        <!-- Right Column: Phân hệ 13 & 14 (Mô phỏng Lắp ghép 3D Three.js) -->
+        <div class="xl:col-span-5 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 flex flex-col justify-between space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-2.5">
+            <div>
+              <span class="text-[10px] font-mono-tech font-bold text-electricred-600 dark:text-techgold-400">PHÂN HỆ 13 & 14 • MÔ HÌNH HÓA 3D CAD</span>
+              <h3 class="font-bold text-sm">Mô phỏng Lắp ghép Lỗ – Trục 3D</h3>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-800 dark:text-techgold-400 font-mono-tech text-[10px] font-bold" title="Phóng đại chênh lệch hình học để quan sát khe hở/độ dôi vi mét">Phóng đại sai lệch: 250×</span>
+              <button onclick="capture3DPNG()" class="px-2.5 py-1 rounded-lg bg-burgundy-900 hover:bg-burgundy-800 text-white text-[11px] font-semibold flex items-center gap-1">
+                <i data-lucide="camera" class="w-3 h-3"></i>
+                <span>Chụp PNG</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3D Limit State & Assembly Controls -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-[11px]">
+            <button onclick="set3DLimitState('NOMINAL')" id="btn-3d-nominal" class="state-3d-btn active py-1.5 px-2 rounded-lg font-semibold border transition">Trạng thái Trung bình</button>
+            <button onclick="set3DLimitState('MAX_CLEARANCE')" id="btn-3d-maxcl" class="state-3d-btn py-1.5 px-2 rounded-lg font-semibold border transition">Giới hạn Dmax / dmin</button>
+            <button onclick="set3DLimitState('MIN_CLEARANCE')" id="btn-3d-mincl" class="state-3d-btn py-1.5 px-2 rounded-lg font-semibold border transition">Giới hạn Dmin / dmax</button>
+          </div>
+
+          <!-- Three.js WebGL Container -->
+          <div id="threejs-container" class="relative w-full h-[320px] sm:h-[350px] rounded-xl overflow-hidden bg-techslate-950 border border-slate-700 cursor-grab active:cursor-grabbing">
+            <div id="threejs-hud" class="absolute top-2.5 left-2.5 z-10 bg-slate-950/80 backdrop-blur text-white px-2.5 py-1.5 rounded-lg border border-slate-700 text-[11px] font-mono-tech pointer-events-none">
+              <div id="hud-3d-state">Trạng thái: Kích thước giới hạn</div>
+              <div id="hud-3d-gap" class="text-techgold-400">Khe hở hướng kính Δr: +12.5 µm</div>
+            </div>
+            <div class="absolute bottom-2.5 right-2.5 z-10 text-[10px] text-slate-400 bg-slate-950/75 px-2 py-0.5 rounded pointer-events-none">
+              Kéo chuột xoay 360° • Cuộn để phóng to
+            </div>
+          </div>
+
+          <!-- Assembly Slider & Camera Controls -->
+          <div class="space-y-2 pt-1">
+            <div class="flex items-center gap-2 text-xs">
+              <button id="btn-animate-assembly" onclick="toggleAssemblyAnimation()" class="px-3 py-1.5 rounded-lg bg-electricred-500 hover:bg-electricred-600 text-white font-bold flex items-center gap-1 shrink-0">
+                <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                <span>Lắp/Tháo</span>
+              </button>
+              <span class="text-[11px] font-semibold shrink-0">Độ lồng trục:</span>
+              <input id="assembly-insertion-slider" type="range" min="0" max="100" value="65" oninput="updateAssemblyInsertion(this.value)" class="flex-1 accent-techgold-500 cursor-pointer" />
+              <span id="assembly-pct-label" class="font-mono-tech text-[11px] w-9 text-right">65%</span>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-1.5 text-[11px]">
+              <div class="flex gap-1">
+                <button onclick="setCameraView('ISO')" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 font-medium">Phối cảnh</button>
+                <button onclick="setCameraView('FRONT')" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 font-medium">Mặt chính</button>
+                <button onclick="setCameraView('SIDE')" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 font-medium">Mặt cạnh</button>
+              </div>
+              <button onclick="toggle3DCutaway()" id="btn-3d-cutaway" class="px-2.5 py-1 rounded bg-burgundy-900 text-techgold-400 font-semibold">Mặt cắt 1/2 Lỗ: BẬT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phân hệ 15: Scenario-based Virtual Experiments -->
+      <div id="lab-panel-scenarios" class="lab-panel hidden bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 15 • THÍ NGHIỆM ẢO CÓ HƯỚNG DẪN 8 BƯỚC</span>
+            <h3 class="text-lg font-bold">Kịch bản Thí nghiệm Khám phá Bản chất Dung sai – Lắp ghép</h3>
+          </div>
+          <select id="scenario-selector" onchange="renderLabScenario(this.value)" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-bold">
+            <option value="0">Kịch bản 1: Ảnh hưởng của cấp chính xác IT đến chiều rộng miền dung sai</option>
+            <option value="1">Kịch bản 2: So sánh Hệ thống lỗ cơ sở (H7/g6) và Hệ thống trục cơ sở (G7/h6)</option>
+            <option value="2">Kịch bản 3: Phân tích trạng thái giới hạn trong lắp trung gian H7/k6</option>
+          </select>
+        </div>
+        <div id="scenario-content-area" class="space-y-4"></div>
+      </div>
+
+      <!-- Phân hệ 16: Tolerance Stack-up & Monte Carlo (Extended Module) -->
+      <div id="lab-panel-chain" class="lab-panel hidden bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-mono-tech px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-800 dark:text-techgold-400 font-bold">PHÂN HỆ 16 • MODULE MỞ RỘNG (ĐỘC LẬP VỚI TRA CỨU ISO 286)</span>
+            <h3 class="text-lg font-bold mt-1">Phân tích Chuỗi Kích thước Tuyến tính: Phương pháp Cực đại – Cực tiểu (Worst-Case) & Mô phỏng Monte Carlo</h3>
+          </div>
+          <button onclick="runMonteCarloChain()" class="px-4 py-2 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white text-xs font-bold flex items-center gap-1.5">
+            <i data-lucide="cpu" class="w-4 h-4"></i>
+            <span>Chạy Mô phỏng 10.000 Mẫu</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-5 space-y-3 text-xs">
+            <p class="text-slate-600 dark:text-slate-400">Nhập các khâu thành phần trong chuỗi kích thước 1 chiều $A_\Sigma = A_1 - A_2 - A_3$ (VD: khe hở dọc trục bánh răng trong hộp giảm tốc):</p>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div class="font-bold text-emerald-700 dark:text-emerald-400">Khâu tăng $A_1$ (Chiều dài trong thân hộp, mm):</div>
+              <div class="grid grid-cols-3 gap-2">
+                <div><span>Danh nghĩa</span><input id="mc-a1-nom" type="number" value="100" step="0.1" class="w-full mt-1 px-2 py-1 rounded bg-white dark:bg-slate-900 border font-mono-tech" /></div>
+                <div><span>ES (mm)</span><input id="mc-a1-es" type="number" value="0.15" step="0.01" class="w-full mt-1 px-2 py-1 rounded bg-white dark:bg-slate-900 border font-mono-tech" /></div>
+                <div><span>EI (mm)</span><input id="mc-a1-ei" type="number" value="0.00" step="0.01" class="w-full mt-1 px-2 py-1 rounded bg-white dark:bg-slate-900 border font-mono-tech" /></div>
+              </div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div class="font-bold text-rose-700 dark:text-rose-400">Khâu giảm $A_2$ (Bề rộng moay-ơ bánh răng, mm):</div>
+              <div class="grid grid-cols-3 gap-2">
+                <div><span>Danh nghĩa</span><input id="mc-a2-nom" type="number" value="60" step="0.1" class="w-full mt-1 px-2 py-1 rounded bg-white dark:bg-slate-900 border font-mono-tech" /></div>
+                <div><span>es (mm)</span><input id="mc-a2-es" type="number" value="0.00" step="0.01" class="w-full mt-1 px-2 py-1 rounded bg-white dark:bg-slate-900 border font-mono-tech" /></div>
+                <div><span>ei (mm)</span><input id="mc-a2-ei" type="number" value="-0.10" step="0.01" class="w-full mt-1 px-2 py-1 rounded bg-white dark:bg-slate-900 border font-mono-tech" /></div>
+              </div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div class="font-bold text-rose-700 dark:text-rose-400">Khâu giảm $A_3$ (Bạc chắn dầu, mm):</div>
+              <div class="grid grid-cols-3 gap-2">
+                <div><span>Danh nghĩa</span><input id="mc-a3-nom" type="number" value="39.8" step="0.1" class="w-full mt-1 px-2 py-1 rounded bg-white dark:bg-slate-900 border font-mono-tech" /></div>
+                <div><span>es (mm)</span><input id="mc-a3-es" type="number" value="0.00" step="0.01" class="w-full mt-1 px-2 py-1 rounded bg-white dark:bg-slate-900 border font-mono-tech" /></div>
+                <div><span>ei (mm)</span><input id="mc-a3-ei" type="number" value="-0.08" step="0.01" class="w-full mt-1 px-2 py-1 rounded bg-white dark:bg-slate-900 border font-mono-tech" /></div>
+              </div>
+            </div>
+          </div>
+          <div id="mc-results-area" class="lg:col-span-7 bg-slate-50 dark:bg-techslate-850 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 space-y-4">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- WORKSPACE 04: CONTENT STUDIO – XƯỞNG HỌC LIỆU (PHÂN HỆ 17–26)       -->
+    <!-- =================================================================== -->
+    <section id="ws-studio" class="workspace-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-techslate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <div class="flex flex-wrap gap-1.5">
+          <button onclick="switchSubTab('studio', 'generator')" class="studio-subtab active px-3.5 py-2 rounded-xl text-xs font-bold transition">18–21 & 26. Sinh Bài tập, Đề thi & Lời giải</button>
+          <button onclick="switchSubTab('studio', 'bank')" class="studio-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">17. Ngân hàng Câu hỏi</button>
+          <button onclick="switchSubTab('studio', 'worksheet')" class="studio-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">22–24. Phiếu Thực hành & Rubric</button>
+          <button onclick="switchSubTab('studio', 'export')" class="studio-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">25. Xuất Tài liệu Word / PDF</button>
+        </div>
+        <span class="text-xs font-mono-tech text-emerald-700 dark:text-emerald-400 font-semibold">✓ Mọi số liệu đề thi đều được xác minh bởi Động cơ ISO 286</span>
+      </div>
+
+      <!-- Phân hệ 18, 19, 21, 26: Automated Exercise & Exam Generator -->
+      <div id="studio-panel-generator" class="studio-panel grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-4 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4 text-xs">
+          <div class="border-b border-slate-200 dark:border-slate-800 pb-2.5">
+            <span class="font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 18, 19 & 26</span>
+            <h3 class="font-bold text-base">Cấu hình Sinh Đề & Bài tập Tự động</h3>
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Tiêu đề Đề kiểm tra / Bộ bài tập</label>
+            <input id="gen-exam-title" type="text" value="BÀI KIỂM TRA DUNG SAI – LẮP GHÉP ISO 286 (MÃ ĐỀ 101)" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-semibold" />
+          </div>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-bold block mb-1">Số lượng câu hỏi</label>
+              <select id="gen-q-count" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech font-bold">
+                <option value="3">3 câu tự luận tính toán</option>
+                <option value="4" selected>4 câu tổng hợp</option>
+                <option value="6">6 câu đề thi 45 phút</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold block mb-1">Mức độ phân hóa</label>
+              <select id="gen-difficulty" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-semibold">
+                <option value="ALL">Hỗn hợp (Cơ bản → Vận dụng)</option>
+                <option value="BASIC">Cơ bản (Hệ thống lỗ H7)</option>
+                <option value="ADVANCED">Nâng cao (Hệ trục h6 & So sánh)</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700">
+            <span class="font-semibold">Kèm đáp án & lời giải chi tiết từng bước</span>
+            <input id="gen-include-solutions" type="checkbox" checked class="w-4 h-4 accent-electricred-500" />
+          </div>
+          <button onclick="generateVerifiedExamSet()" class="w-full py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold flex items-center justify-center gap-2 transition">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>Sinh Bộ Đề & Đáp Án Xác Minh</span>
+          </button>
+          <button id="studio-assign-class-btn" onclick="openAssignToClassModal()" class="w-full py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-2 transition">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Giao Bộ Đề Này Cho Lớp Học</span>
+          </button>
+          <button onclick="switchSubTab('studio', 'export')" class="w-full py-2.5 rounded-xl bg-burgundy-900 hover:bg-burgundy-800 text-white font-bold flex items-center justify-center gap-2 transition">
+            <i data-lucide="file-down" class="w-4 h-4 text-techgold-400"></i>
+            <span>Chuyển sang Xuất Word / PDF →</span>
+          </button>
+        </div>
+
+        <div id="generated-exam-preview" class="lg:col-span-8 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4 max-h-[650px] overflow-y-auto">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Phân hệ 17: Question Bank -->
+      <div id="studio-panel-bank" class="studio-panel hidden bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div>
+            <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 17 & 20 • NGÂN HÀNG CÂU HỎI ĐA DẠNG</span>
+            <h3 class="text-lg font-bold">Kho Câu hỏi Chuẩn hóa Học phần Dung sai – Lắp ghép</h3>
+          </div>
+        </div>
+        <div id="question-bank-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+
+      <!-- Phân hệ 22, 23, 24: Practical Worksheet & Rubric Builder -->
+      <div id="studio-panel-worksheet" class="studio-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-6 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+          <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 23 • PHIẾU THỰC HÀNH THÍ NGHIỆM ẢO</span>
+          <h3 class="font-bold text-base">Mẫu Phiếu Thực hành: Khảo sát Mối ghép Trụ Trơn ISO 286</h3>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700 text-xs space-y-2.5">
+            <p><strong>1. Mục tiêu thí nghiệm:</strong> Sinh viên vận dụng thành thạo bảng ISO 286-2:2010 để xác định sai lệch giới hạn, tính độ hở/độ dôi và phân tích trực quan miền dung sai trên T-FIT LAB.</p>
+            <p><strong>2. Nhiệm vụ thực hành:</strong> Khảo sát 3 mối ghép điển hình tại kích thước danh nghĩa hiện hành (<span id="ws-current-fit-ref" class="font-mono-tech font-bold text-burgundy-700 dark:text-techgold-400">Ø40 H7/g6</span>), ghi nhận số liệu và chụp ảnh biểu đồ 2D/3D đính kèm báo cáo.</p>
+            <table class="w-full border-collapse border border-slate-300 dark:border-slate-700 font-mono-tech text-[11px]">
+              <thead class="bg-burgundy-900 text-white">
+                <tr>
+                  <th class="border border-slate-400 p-1.5">Ký hiệu</th>
+                  <th class="border border-slate-400 p-1.5">ES / EI (µm)</th>
+                  <th class="border border-slate-400 p-1.5">es / ei (µm)</th>
+                  <th class="border border-slate-400 p-1.5">Smax / Smin (µm)</th>
+                  <th class="border border-slate-400 p-1.5">Kiểu lắp</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5 font-bold">Ø40 H7/f7</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">+25 / 0</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">-25 / -50</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">+75 / +25</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">Lắp lỏng</td>
+                </tr>
+                <tr>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5 font-bold">Ø40 H7/k6</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">+25 / 0</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">+18 / +2</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">+23 / -18</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">Lắp trung gian</td>
+                </tr>
+                <tr>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5 font-bold">Ø40 H7/p6</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">+25 / 0</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">+42 / +26</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">-1 / -42</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-1.5">Lắp chặt</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+          <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 24 • RUBRIC ĐÁNH GIÁ NĂNG LỰC THỰC HÀNH</span>
+          <h3 class="font-bold text-base">Tiêu chí Chấm điểm Chuẩn Đầu ra (Thang 10 điểm)</h3>
+          <div class="overflow-x-auto text-xs">
+            <table class="w-full border-collapse border border-slate-300 dark:border-slate-700">
+              <thead class="bg-slate-100 dark:bg-slate-800">
+                <tr>
+                  <th class="border border-slate-300 dark:border-slate-700 p-2 text-left">Tiêu chí</th>
+                  <th class="border border-slate-300 dark:border-slate-700 p-2 w-16">Trọng số</th>
+                  <th class="border border-slate-300 dark:border-slate-700 p-2 text-left">Mức Đạt Xuất sắc</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2 font-semibold">1. Tra cứu ISO 286-2</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2 font-mono-tech text-center">25%</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2">Xác định đúng khoảng kích thước, cấp IT, dấu và giá trị ES, EI, es, ei (µm).</td>
+                </tr>
+                <tr>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2 font-semibold">2. Tính toán Giới hạn</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2 font-mono-tech text-center">30%</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2">Tính đúng Dmax, Dmin, dmax, dmin, Smax, Smin, Nmax, Nmin và kiểm tra TH + TS.</td>
+                </tr>
+                <tr>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2 font-semibold">3. Đọc biểu đồ 2D & 3D</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2 font-mono-tech text-center">25%</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2">Vẽ đúng vị trí miền dung sai so với đường không và nhận diện trạng thái giới hạn.</td>
+                </tr>
+                <tr>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2 font-semibold">4. Phân tích & Chọn lắp</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2 font-mono-tech text-center">20%</td>
+                  <td class="border border-slate-300 dark:border-slate-700 p-2">Phân loại đúng kiểu lắp và biện luận hợp lý cho yêu cầu lắp ráp cơ khí.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phân hệ 25: Real Word (.doc) & PDF Print Export -->
+      <div id="studio-panel-export" class="studio-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-4 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4 text-xs">
+          <div class="border-b border-slate-200 dark:border-slate-800 pb-2.5">
+            <span class="font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 25 • XUẤT HỌC LIỆU KỸ THUẬT</span>
+            <h3 class="font-bold text-base">Tùy chỉnh & Xuất File Word / PDF</h3>
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Tên Đơn vị / Trường</label>
+            <input id="exp-org" type="text" value="TRƯỜNG ĐẠI HỌC CÔNG NGHỆ ĐỒNG NAI (DNTU) – KHOA CƠ KHÍ" oninput="renderDocumentExportPreview()" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Tên Học phần</label>
+            <input id="exp-course" type="text" value="DUNG SAI – LẮP GHÉP VÀ ĐO LƯỜNG KỸ THUẬT" oninput="renderDocumentExportPreview()" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+          </div>
+          <div class="space-y-2 pt-1">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="exp-show-2d" type="checkbox" checked onchange="renderDocumentExportPreview()" class="accent-electricred-500" />
+              <span>Chèn biểu đồ miền dung sai 2D chuẩn ISO</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="exp-show-sol" type="checkbox" checked onchange="renderDocumentExportPreview()" class="accent-electricred-500" />
+              <span>Xuất kèm Đáp án & Lời giải từng bước</span>
+            </label>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-[11px] text-slate-600 dark:text-slate-300">
+            <strong>Ghi chú minh bạch:</strong> Ảnh mô hình 3D (nếu đính kèm) là ảnh tĩnh PNG chụp từ góc nhìn đã chọn trên Phòng thí nghiệm ảo; tệp Word/PDF không chứa đối tượng 3D tương tác động.
+          </div>
+          <div class="pt-2 space-y-2">
+            <button onclick="downloadWordDocument()" class="w-full py-2.5 rounded-xl bg-burgundy-900 hover:bg-burgundy-800 text-white font-bold flex items-center justify-center gap-2 shadow transition">
+              <i data-lucide="file-text" class="w-4 h-4 text-techgold-400"></i>
+              <span>Tải xuống Tệp Word (.doc) Thực tế</span>
+            </button>
+            <button onclick="window.print()" class="w-full py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold flex items-center justify-center gap-2 shadow transition">
+              <i data-lucide="printer" class="w-4 h-4"></i>
+              <span>In / Lưu Tệp PDF Khổ A4</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 bg-slate-200/70 dark:bg-slate-900/70 rounded-2xl p-4 sm:p-6 overflow-x-auto">
+          <div id="printable-document-area" class="bg-white text-slate-900 max-w-[210mm] mx-auto p-8 rounded-xl shadow-lg border border-slate-300 space-y-5 text-sm">
+            <!-- A4 Live Preview rendered here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- WORKSPACE 05: LEARNING ANALYTICS & ADMIN (PHÂN HỆ 27–36)            -->
+    <!-- =================================================================== -->
+    <section id="ws-analytics" class="workspace-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-techslate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <div class="flex flex-wrap gap-1.5">
+          <button onclick="switchSubTab('analytics', 'diagnosis')" class="analytics-subtab active px-3.5 py-2 rounded-xl text-xs font-bold transition">27–29. Chấm điểm, Chẩn đoán Lỗi & Học thích ứng</button>
+          <button onclick="switchSubTab('analytics', 'competency')" class="analytics-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">30. Hồ sơ Năng lực Sinh viên (Radar)</button>
+          <button id="analytics-subtab-class" onclick="switchSubTab('analytics', 'class')" class="analytics-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">31–32. Quản lý Lớp DNTU & Phân tích Đề</button>
+          <button id="analytics-subtab-admin" onclick="switchSubTab('analytics', 'admin')" class="analytics-subtab px-3.5 py-2 rounded-xl text-xs font-bold transition">33–36. Quản trị Dữ liệu, Sao lưu & Kiểm thử</button>
+        </div>
+      </div>
+
+      <!-- Phân hệ 27, 28, 29: Step-by-step Grading, Error Diagnosis & Adaptive Path -->
+      <div id="analytics-panel-diagnosis" class="analytics-panel grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-6 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div>
+              <span class="text-xs font-mono-tech text-electricred-600 dark:text-techgold-400 font-bold">PHÂN HỆ 27 & 28 • CHẨN ĐOÁN NGUYÊN NHÂN LỖI SAI</span>
+              <h3 class="font-bold text-base">Bài Thực hành Có Chẩn đoán Từng Bước</h3>
+            </div>
+            <button onclick="loadNextDiagnosticProblem()" class="px-3 py-1.5 rounded-xl bg-burgundy-900 text-white text-xs font-semibold">Đổi bài tập</button>
+          </div>
+
+          <div id="diag-problem-statement" class="p-3.5 rounded-xl bg-burgundy-950/5 dark:bg-burgundy-950/40 border border-burgundy-700/30 text-xs space-y-1"></div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="font-bold block mb-1">1. Sai lệch trên lỗ ES (µm):</label>
+              <input id="diag-in-ES" type="number" placeholder="Nhập số nguyên µm" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+            </div>
+            <div>
+              <label class="font-bold block mb-1">2. Sai lệch dưới lỗ EI (µm):</label>
+              <input id="diag-in-EI" type="number" placeholder="Nhập số nguyên µm" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+            </div>
+            <div>
+              <label class="font-bold block mb-1">3. Sai lệch trên trục es (µm):</label>
+              <input id="diag-in-es" type="number" placeholder="Nhập số nguyên µm" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+            </div>
+            <div>
+              <label class="font-bold block mb-1">4. Sai lệch dưới trục ei (µm):</label>
+              <input id="diag-in-ei" type="number" placeholder="Nhập số nguyên µm" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+            </div>
+            <div>
+              <label class="font-bold block mb-1">5. Smax = ES − ei (µm):</label>
+              <input id="diag-in-smax" type="number" placeholder="Nhập số nguyên µm" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+            </div>
+            <div>
+              <label class="font-bold block mb-1">6. Smin = EI − es (µm):</label>
+              <input id="diag-in-smin" type="number" placeholder="Nhập số nguyên µm" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+            </div>
+            <div class="col-span-2">
+              <label class="font-bold block mb-1">7. Kết luận kiểu lắp ghép:</label>
+              <select id="diag-in-type" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-semibold">
+                <option value="CLEARANCE">Lắp lỏng (Smin ≥ 0)</option>
+                <option value="TRANSITION">Lắp trung gian (Smin &lt; 0 và Smax &gt; 0)</option>
+                <option value="INTERFERENCE">Lắp chặt (Smax ≤ 0)</option>
+              </select>
+            </div>
+          </div>
+
+          <button onclick="evaluateDiagnosticSubmission()" class="w-full py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold text-xs flex items-center justify-center gap-2 transition">
+            <i data-lucide="stethoscope" class="w-4 h-4"></i>
+            <span>Chấm Điểm Thành Phần & Chẩn Đoán Lỗi Sai</span>
+          </button>
+        </div>
+
+        <!-- Diagnosis & Adaptive Recommendation Output -->
+        <div id="diag-output-panel" class="lg:col-span-6 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">KẾT QUẢ PHÂN TÍCH & LỘ TRÌNH HỌC TẬP THÍCH ỨNG (PHÂN HỆ 28 & 29)</span>
+          <div id="diag-result-content" class="text-xs space-y-3 text-slate-600 dark:text-slate-300">
+            <p class="p-4 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700">
+              Nhập kết quả tính toán ở khung bên trái và nhấn <strong>"Chấm Điểm Thành Phần & Chẩn Đoán Lỗi Sai"</strong>. Hệ thống sẽ đối chiếu từng bước với Động cơ ISO 286, phát hiện chính xác lỗi nhầm dấu/công thức/ranh giới và đề xuất mô phỏng bổ trợ.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phân hệ 30: Student Competency Radar Profile -->
+      <div id="analytics-panel-competency" class="analytics-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-6 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+          <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 30 • BIỂU ĐỒ RADAR 9 NĂNG LỰC CƠ KHÍ</span>
+          <h3 class="font-bold text-base">Hồ sơ Năng lực Cá nhân — Sinh viên DNTU</h3>
+          <div id="competency-radar-wrapper" class="flex justify-center py-2"></div>
+        </div>
+        <div class="lg:col-span-6 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4 text-xs">
+          <h3 class="font-bold text-base">Chi tiết Chỉ số Năng lực & Lịch sử Lỗi Lặp</h3>
+          <div id="competency-bars-list" class="space-y-2.5"></div>
+        </div>
+      </div>
+
+      <!-- Phân hệ 31 & 32: Class Management & Question Quality Analytics -->
+      <div id="analytics-panel-class" class="analytics-panel hidden space-y-5">
+        <div class="bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div>
+              <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 31 & 32 • DỮ LIỆU THỰC TẾ TỪ HỆ THỐNG LỚP HỌC</span>
+              <h3 class="text-lg font-bold">Thống kê Lớp Học phần, Tiến độ Nộp bài & Phân bố Điểm ISO 286</h3>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <select id="analytics-class-filter" onchange="renderLiveClassAnalytics()" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-bold">
+                <option value="ALL">Tất cả lớp học trong hệ thống</option>
+              </select>
+              <button onclick="switchWorkspace('classroom')" class="px-3 py-1.5 rounded-xl bg-burgundy-900 text-techgold-400 text-xs font-bold">
+                Quản lý lớp & Mã tham gia →
+              </button>
+            </div>
+          </div>
+          <div id="live-class-analytics-cards" class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs"></div>
+          <div id="live-class-analytics-table" class="overflow-x-auto"></div>
+        </div>
+      </div>
+
+      <!-- Phân hệ 33, 34, 36: System Admin, Backup/Restore & Automated ISO Test Suite -->
+      <div id="analytics-panel-admin" class="analytics-panel hidden space-y-5">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-5 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4 text-xs">
+            <span class="font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">PHÂN HỆ 33, 34 & 36 • QUẢN TRỊ & TÍCH HỢP</span>
+            <h3 class="font-bold text-base">Sao lưu Dữ liệu, Kiểm thử Kỹ thuật & Mở rộng</h3>
+            <div class="space-y-2.5">
+              <button onclick="exportSystemBackupJSON()" class="w-full py-2.5 rounded-xl bg-burgundy-900 hover:bg-burgundy-800 text-white font-bold flex items-center justify-center gap-2">
+                <i data-lucide="download" class="w-4 h-4 text-techgold-400"></i>
+                <span>Sao lưu Toàn bộ Dữ liệu Học tập & Lớp học (JSON)</span>
+              </button>
+              <button onclick="runAutomatedVerificationSuite()" class="w-full py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-2">
+                <i data-lucide="check-square" class="w-4 h-4"></i>
+                <span>Chạy Bộ Kiểm thử Xác minh ISO 286 (9 Test Cases)</span>
+              </button>
+              <button onclick="runClassroom12ScenariosTest()" class="w-full py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold flex items-center justify-center gap-2">
+                <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                <span>Kiểm thử 12 Kịch bản Lớp học & Mã Tham gia</span>
+              </button>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-200 dark:border-slate-700 space-y-1.5">
+              <div class="font-bold">Lịch sử Kiểm toán Hệ thống (Audit Log)</div>
+              <div id="audit-log-list" class="space-y-1 font-mono-tech text-[11px] text-slate-600 dark:text-slate-400 max-h-48 overflow-y-auto"></div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+            <h3 class="font-bold text-base">Kết quả Bộ Kiểm thử Tự động (ISO 286 & 12 Kịch bản Lớp học)</h3>
+            <div id="verification-suite-results" class="space-y-2 text-xs font-mono-tech max-h-[340px] overflow-y-auto"></div>
+          </div>
+        </div>
+
+        <!-- Admin All-Classes & Join Code Oversight (Section 8) -->
+        <div class="bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div>
+              <span class="text-xs font-mono-tech text-burgundy-700 dark:text-techgold-400 font-bold">ADMIN PORTAL • QUẢN TRỊ TOÀN BỘ LỚP HỌC & MÃ THAM GIA</span>
+              <h3 class="text-base font-bold">Danh mục Lớp học Toàn hệ thống (Khóa / Khôi phục / Thu hồi mã)</h3>
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <input id="admin-class-search" oninput="renderAdminClassesPanel()" type="text" placeholder="Tìm tên lớp, mã lớp, giảng viên..." class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+              <select id="admin-semester-filter" onchange="renderAdminClassesPanel()" class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-semibold">
+                <option value="ALL">Tất cả học kỳ</option>
+                <option value="Học kỳ 1">Học kỳ 1</option>
+                <option value="Học kỳ 2">Học kỳ 2</option>
+                <option value="Học kỳ Hè">Học kỳ Hè</option>
+              </select>
+            </div>
+          </div>
+          <div id="admin-classes-table-wrapper" class="overflow-x-auto"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- WORKSPACE 06: CLASSROOM PORTAL (STUDENT & LECTURER CONNECTION)      -->
+    <!-- =================================================================== -->
+    <section id="ws-classroom" class="workspace-view hidden space-y-5">
+      <!-- Top Portal Switcher & Sandbox Helper Bar -->
+      <div class="bg-white dark:bg-techslate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="portal-btn-student" onclick="switchClassroomPortal('STUDENT')" class="px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition bg-burgundy-900 text-techgold-400 shadow">
+            <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+            <span>STUDENT PORTAL (Cổng Sinh viên)</span>
+          </button>
+          <button id="portal-btn-lecturer" onclick="switchClassroomPortal('LECTURER')" class="px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
+            <i data-lucide="presentation" class="w-4 h-4"></i>
+            <span>LECTURER PORTAL (Cổng Giảng viên)</span>
+          </button>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <span id="classroom-active-user-pill" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-mono-tech font-semibold">
+            Chưa đăng nhập tài khoản cá nhân
+          </span>
+          <button onclick="seedDemoSandboxData()" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-800 dark:text-techgold-400 font-bold flex items-center gap-1.5 transition" title="Nạp dữ liệu thử nghiệm có gắn nhãn rõ ràng để kiểm tra nhanh các luồng">
+            <i data-lucide="flask-conical" class="w-3.5 h-3.5"></i>
+            <span>Nạp Dữ liệu Thử nghiệm</span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- A. STUDENT PORTAL VIEW (SECTION 1, 3, 5)                          -->
+      <!-- ================================================================= -->
+      <div id="classroom-student-view" class="space-y-5">
+        <!-- Populated dynamically by renderStudentPortal() -->
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- B. LECTURER PORTAL VIEW (SECTION 2, 4, 6, 7)                      -->
+      <!-- ================================================================= -->
+      <div id="classroom-lecturer-view" class="hidden space-y-5">
+        <!-- Populated dynamically by renderLecturerPortal() -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: STUDENT & LECTURER AUTHENTICATION (REGISTER / LOGIN / RESET) -->
+  <!-- ===================================================================== -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-techslate-900 w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden">
+      <div class="bg-burgundy-900 text-white px-5 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-mono-tech text-techgold-400">HỆ THỐNG XÁC THỰC T-FIT LAB • DNTU</span>
+          <h3 class="font-bold text-base">Tài khoản Sinh viên & Giảng viên</h3>
+        </div>
+        <button onclick="closeModal('auth-modal')" class="p-1.5 rounded-lg bg-burgundy-950 hover:bg-electricred-500 text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4 text-xs">
+        <div class="flex gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+          <button id="auth-tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 rounded-lg font-bold bg-burgundy-900 text-techgold-400">Đăng nhập</button>
+          <button id="auth-tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-lg font-bold text-slate-600 dark:text-slate-300">Đăng ký Sinh viên</button>
+          <button id="auth-tab-reset" onclick="switchAuthTab('reset')" class="flex-1 py-2 rounded-lg font-bold text-slate-600 dark:text-slate-300">Quên mật khẩu</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="auth-form-login" onsubmit="handleAuthLogin(event)" class="space-y-3">
+          <div>
+            <label class="font-bold block mb-1">Email hoặc Mã số sinh viên (MSSV)</label>
+            <input id="login-identifier" type="text" required placeholder="VD: 221150101 hoặc sv.khoa@dntu.edu.vn" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Mật khẩu</label>
+            <input id="login-password" type="password" required placeholder="Nhập mật khẩu cá nhân..." class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+          </div>
+          <div id="login-error-box" class="hidden p-2.5 rounded-xl bg-rose-950/20 border border-electricred-500 text-electricred-600 dark:text-rose-300 font-semibold"></div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold shadow transition">
+            Đăng nhập vào Hệ thống
+          </button>
+        </form>
+
+        <!-- Student Registration Form (Section 1.1) -->
+        <form id="auth-form-register" onsubmit="handleStudentRegister(event)" class="hidden space-y-2.5 max-h-[65vh] overflow-y-auto pr-1">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-bold block mb-1">Mã sinh viên (MSSV) *</label>
+              <input id="reg-mssv" type="text" required placeholder="VD: 231150125" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+            </div>
+            <div>
+              <label class="font-bold block mb-1">Họ và tên đầy đủ *</label>
+              <input id="reg-fullname" type="text" required placeholder="VD: Trần Minh Hoàng" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-bold block mb-1">Email sinh viên *</label>
+              <input id="reg-email" type="email" required placeholder="hoang.tm@dntu.edu.vn" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+            </div>
+            <div>
+              <label class="font-bold block mb-1">Số điện thoại (Tùy chọn)</label>
+              <input id="reg-phone" type="tel" placeholder="0901234567" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-bold block mb-1">Khoa / Ngành học *</label>
+              <select id="reg-dept" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700">
+                <option value="Khoa Cơ khí - Công nghệ Chế tạo máy">Khoa Cơ khí - Chế tạo máy</option>
+                <option value="Công nghệ Kỹ thuật Ô tô">Công nghệ Kỹ thuật Ô tô</option>
+                <option value="Công nghệ Kỹ thuật Cơ điện tử">Công nghệ Kỹ thuật Cơ điện tử</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold block mb-1">Khóa học *</label>
+              <select id="reg-cohort" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech">
+                <option value="K22 (2022–2026)">K22 (2022–2026)</option>
+                <option value="K23 (2023–2027)" selected>K23 (2023–2027)</option>
+                <option value="K24 (2024–2028)">K24 (2024–2028)</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-bold block mb-1">Mật khẩu (≥ 6 ký tự) *</label>
+              <input id="reg-pass" type="password" required minlength="6" placeholder="••••••" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+            </div>
+            <div>
+              <label class="font-bold block mb-1">Xác nhận mật khẩu *</label>
+              <input id="reg-pass2" type="password" required minlength="6" placeholder="••••••" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+            </div>
+          </div>
+          <div id="reg-error-box" class="hidden p-2.5 rounded-xl bg-rose-950/20 border border-electricred-500 text-electricred-600 dark:text-rose-300 font-semibold"></div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-burgundy-900 hover:bg-burgundy-800 text-techgold-400 font-bold shadow transition">
+            Tạo Tài khoản Sinh viên & Đăng nhập
+          </button>
+        </form>
+
+        <!-- Password Reset Form (Section 1.1) -->
+        <form id="auth-form-reset" onsubmit="handlePasswordReset(event)" class="hidden space-y-3">
+          <p class="text-slate-500">Xác minh Mã sinh viên và Email đã đăng ký để đặt lại mật khẩu mới:</p>
+          <div>
+            <label class="font-bold block mb-1">Mã sinh viên (MSSV)</label>
+            <input id="reset-mssv" type="text" required class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Email đã đăng ký</label>
+            <input id="reset-email" type="email" required class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Mật khẩu mới (≥ 6 ký tự)</label>
+            <input id="reset-newpass" type="password" required minlength="6" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+          </div>
+          <div id="reset-feedback-box" class="hidden p-2.5 rounded-xl font-semibold"></div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold">
+            Đặt lại Mật khẩu
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: STUDENT JOIN CLASS BY CODE OR QR (SECTION 3)                 -->
+  <!-- ===================================================================== -->
+  <div id="join-class-modal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-techslate-900 w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden">
+      <div class="bg-burgundy-900 text-white px-5 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-mono-tech text-techgold-400">STUDENT PORTAL • GHI DANH LỚP HỌC</span>
+          <h3 class="font-bold text-base">Tham gia Lớp học bằng Mã Giảng viên Cấp</h3>
+        </div>
+        <button onclick="closeModal('join-class-modal')" class="p-1.5 rounded-lg bg-burgundy-950 hover:bg-electricred-500 text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4 text-xs">
+        <div id="join-step-1" class="space-y-3">
+          <div>
+            <label class="font-bold block mb-1">Nhập Mã tham gia lớp (Class Join Code) hoặc dán Link mời:</label>
+            <input id="join-code-input" type="text" placeholder="VD: TFIT-8K29Q" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-techslate-850 border-2 border-burgundy-800/40 focus:border-electricred-500 font-mono-tech font-extrabold text-base uppercase tracking-wider" />
+          </div>
+          <div id="join-error-alert" class="hidden p-3 rounded-xl bg-rose-950/20 border border-electricred-500 text-electricred-600 dark:text-rose-300 font-semibold leading-relaxed"></div>
+          <div class="flex gap-2 pt-1">
+            <button onclick="verifyJoinCodeStep1()" class="flex-1 py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold shadow transition">
+              Kiểm tra Mã Lớp
+            </button>
+            <button onclick="closeModal('join-class-modal')" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 font-semibold">
+              Hủy
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Confirm Class Details before Enrolling (Section 3.2 Step 6-7) -->
+        <div id="join-step-2" class="hidden space-y-3">
+          <div id="join-class-preview-card" class="p-4 rounded-xl bg-burgundy-950/5 dark:bg-burgundy-950/40 border border-burgundy-700/40 space-y-1.5"></div>
+          <div class="flex gap-2">
+            <button onclick="confirmStudentEnrollment()" class="flex-1 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold shadow transition">
+              Xác nhận Tham gia Lớp
+            </button>
+            <button onclick="resetJoinModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-semibold">
+              Nhập mã khác
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: LECTURER CREATE CLASS (SECTION 2.1)                          -->
+  <!-- ===================================================================== -->
+  <div id="create-class-modal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-techslate-900 w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden">
+      <div class="bg-burgundy-900 text-white px-5 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-mono-tech text-techgold-400">LECTURER PORTAL • KHỞI TẠO LỚP HỌC PHẦN</span>
+          <h3 class="font-bold text-base">Tạo Lớp học Mới & Tự động Cấp Mã Tham gia</h3>
+        </div>
+        <button onclick="closeModal('create-class-modal')" class="p-1.5 rounded-lg bg-burgundy-950 hover:bg-electricred-500 text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateClassSubmit(event)" class="p-5 space-y-3 text-xs max-h-[80vh] overflow-y-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold block mb-1">Tên lớp học *</label>
+            <input id="cls-name" type="text" required placeholder="VD: Dung sai – Kỹ thuật đo (Nhóm 01)" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Mã lớp nội bộ (Không dùng làm mã tham gia) *</label>
+            <input id="cls-internal-code" type="text" required placeholder="VD: DUNGSAI_K23_01" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold block mb-1">Tên học phần *</label>
+            <input id="cls-course-name" type="text" required value="Dung sai – Lắp ghép và Đo lường kỹ thuật" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Mã học phần *</label>
+            <input id="cls-course-code" type="text" required value="MECH204" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="font-bold block mb-1">Khoa / Ngành *</label>
+            <input id="cls-dept" type="text" required value="Khoa Cơ khí - DNTU" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Lớp sinh viên *</label>
+            <input id="cls-student-group" type="text" required placeholder="VD: 23DCK111" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Sĩ số tối đa *</label>
+            <input id="cls-max-students" type="number" required min="1" max="200" value="45" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="font-bold block mb-1">Học kỳ *</label>
+            <select id="cls-semester" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700">
+              <option value="Học kỳ 1">Học kỳ 1</option>
+              <option value="Học kỳ 2">Học kỳ 2</option>
+              <option value="Học kỳ Hè">Học kỳ Hè</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Năm học *</label>
+            <input id="cls-year" type="text" required value="2026–2027" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Giảng viên phụ trách *</label>
+            <input id="cls-lecturer-name" type="text" required value="ThS. Nguyễn Văn An" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="font-bold block mb-1">Ngày bắt đầu *</label>
+            <input id="cls-start-date" type="date" required value="2026-09-01" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Ngày kết thúc *</label>
+            <input id="cls-end-date" type="date" required value="2027-01-31" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Chế độ ghi danh ban đầu</label>
+            <select id="cls-approval-mode" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-semibold">
+              <option value="AUTO">Chế độ A: Tham gia tự động</option>
+              <option value="APPROVAL">Chế độ B: Chờ giảng viên duyệt</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold block mb-1">Mô tả lớp học & Yêu cầu học phần</label>
+          <textarea id="cls-desc" rows="2" placeholder="Mô tả nội dung thực hành ISO 286-1/2:2010 và quy định nộp bài trên T-FIT LAB..." class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('create-class-modal')" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-semibold">Hủy</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold shadow">
+            Tạo Lớp & Sinh Mã Tham Gia
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 4: ASSIGN EXERCISE/EXAM TO CLASS (SECTION 6)                    -->
+  <!-- ===================================================================== -->
+  <div id="assign-class-modal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-techslate-900 w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden">
+      <div class="bg-burgundy-900 text-white px-5 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-mono-tech text-techgold-400">LIÊN KẾT HỌC LIỆU & LỚP HỌC</span>
+          <h3 class="font-bold text-base">Giao Bài tập / Đề Kiểm tra cho Lớp</h3>
+        </div>
+        <button onclick="closeModal('assign-class-modal')" class="p-1.5 rounded-lg bg-burgundy-950 hover:bg-electricred-500 text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <form onsubmit="handleAssignToClassSubmit(event)" class="p-5 space-y-3 text-xs">
+        <div>
+          <label class="font-bold block mb-1">Chọn Lớp nhận bài *</label>
+          <select id="assign-target-class" required class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-bold"></select>
+        </div>
+        <div>
+          <label class="font-bold block mb-1">Tiêu đề Bài tập / Đề kiểm tra *</label>
+          <input id="assign-title" type="text" required class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-semibold" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold block mb-1">Phân loại</label>
+            <select id="assign-type" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-semibold">
+              <option value="ASSIGNMENT">Bài tập Thực hành</option>
+              <option value="EXAM">Bài Kiểm tra Định kỳ</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Hạn nộp bài *</label>
+            <input id="assign-due" type="datetime-local" required value="2026-12-15T23:59" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold block mb-1">Thời lượng (phút)</label>
+            <input id="assign-duration" type="number" value="45" min="5" max="180" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700 font-mono-tech" />
+          </div>
+          <div>
+            <label class="font-bold block mb-1">Công bố đáp án</label>
+            <select id="assign-release" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-techslate-850 border border-slate-300 dark:border-slate-700">
+              <option value="AFTER_GRADE">Sau khi giảng viên duyệt điểm</option>
+              <option value="IMMEDIATE">Ngay sau khi nộp bài</option>
+            </select>
+          </div>
+        </div>
+        <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-[11px]">
+          Bộ đề sẽ sử dụng các bài toán ISO 286 đã xác minh từ <strong>Content Studio</strong> (hiện có <span id="assign-prob-count" class="font-bold">4</span> câu hỏi chuẩn). Chỉ thành viên hợp lệ của lớp mới được quyền truy cập.
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('assign-class-modal')" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-semibold">Hủy</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-electricred-500 hover:bg-electricred-600 text-white font-bold">Xác nhận Giao bài</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 5: STUDENT TAKE ASSIGNMENT / EXAM & SUBMIT (SECTION 5.2 & 6)    -->
+  <!-- ===================================================================== -->
+  <div id="take-assignment-modal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-techslate-900 w-full max-w-3xl max-h-[90vh] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl flex flex-col overflow-hidden">
+      <div class="bg-burgundy-900 text-white px-5 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-mono-tech text-techgold-400">LÀM BÀI TRỰC TUYẾN • XÁC MINH ISO 286</span>
+          <h3 id="take-assign-title" class="font-bold text-base">Bài tập Thực hành ISO 286</h3>
+        </div>
+        <button onclick="closeModal('take-assignment-modal')" class="p-1.5 rounded-lg bg-burgundy-950 hover:bg-electricred-500 text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="take-assign-body" class="p-5 overflow-y-auto space-y-4 text-xs"></div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: 36-SUBSYSTEM ARCHITECTURE & PHASE MATRIX (PHẦN 3 & PHẦN 10)    -->
+  <!-- ===================================================================== -->
+  <div id="architecture-modal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-techslate-900 w-full max-w-5xl max-h-[90vh] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl flex flex-col overflow-hidden">
+      <div class="bg-burgundy-900 text-white px-5 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-mono-tech text-techgold-400">KIẾN TRÚC HỆ THỐNG T-FIT LAB • 5 KHÔNG GIAN & 36 PHÂN HỆ</span>
+          <h3 class="font-bold text-lg">Ma trận Triển khai Chức năng & Tiêu chuẩn ISO 286-1/2:2010</h3>
+        </div>
+        <button onclick="closeArchitectureModal()" class="p-1.5 rounded-lg bg-burgundy-950 hover:bg-electricred-500 text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="architecture-modal-body" class="p-5 overflow-y-auto space-y-4 text-xs"></div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- TOAST NOTIFICATION CONTAINER (NO ALERT/CONFIRM USED)                  -->
+  <!-- ===================================================================== -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2 max-w-sm"></div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT ENGINE: ISO 286-1/2:2010 SOURCE OF TRUTH, 2D SVG & 3D CAD   -->
+  <!-- ===================================================================== -->
+  <script src="js/iso286.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/auth-extra.js"></script>
+  <script src="js/gate-ui.js"></script>
+</body>
+</html>

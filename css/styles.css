@@ -1,0 +1,278 @@
+/* Custom Engineering Styles & Scrollbars */
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.06);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(120, 12, 26, 0.45);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 42, 60, 0.8);
+    }
+
+    /* Engineering Blueprint Grid Background */
+    .cad-grid-bg {
+      background-size: 24px 24px;
+      background-image: 
+        linear-gradient(to right, rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+    }
+    .dark .cad-grid-bg {
+      background-image: 
+        linear-gradient(to right, rgba(245, 158, 11, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(245, 158, 11, 0.07) 1px, transparent 1px);
+    }
+
+    /* Print Styling for Real PDF Export */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-document-area, #printable-document-area * {
+        visibility: visible;
+      }
+      #printable-document-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 12mm !important;
+      }
+    }
+
+
+/* =========================================================================
+   LOGIN GATE — Màn hình mở đầu (Landing) & Đăng nhập (Auth Gateway)
+   ========================================================================= */
+.tg-root {
+  --tg-gold: #e8c468;
+  --tg-gold-soft: #f3dc9a;
+  --tg-cream: #fff7e2;
+  --tg-red: #d4223a;
+  --tg-red-deep: #8f1d33;
+  --tg-green: #34d399;
+  --tg-line: rgba(232, 196, 104, 0.32);
+  --tg-panel: rgba(28, 7, 12, 0.88);
+  background: #120305;
+  color: #f7ece6;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.tg-root, .tg-root *, .tg-root *::before, .tg-root *::after { box-sizing: border-box; }
+.tg-root .is-off { display: none !important; }
+.tg-root .tg-mono { font-family: 'JetBrains Mono', monospace; }
+.tg-screen { position: relative; min-height: 100%; width: 100%; overflow: hidden; }
+
+/* ---------- Màn hình 1: Landing ---------- */
+.tg-landing {
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 38%, #3a0a12 0%, #1d0509 45%, #0f0205 100%);
+}
+.tg-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(232,196,104,.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(232,196,104,.05) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: radial-gradient(ellipse at center, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 20%, transparent 75%);
+}
+.tg-canvas-landing {
+  position: absolute; left: 50%; top: 40%;
+  width: min(1100px, 130vw); height: min(520px, 70vh);
+  transform: translate(-50%, -50%); pointer-events: none; opacity: .95;
+}
+.tg-landing-inner {
+  position: relative; z-index: 2; width: 100%; max-width: 940px;
+  padding: 40px 20px 56px; display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.tg-logo-frame {
+  padding: 12px; border-radius: 30px; border: 1px solid rgba(232,196,104,.18);
+  background: rgba(30,6,11,.55); box-shadow: 0 0 40px rgba(212,34,58,.12);
+}
+.tg-logo-frame > div {
+  width: 328px; max-width: 70vw; height: 212px; display: flex; align-items: center; justify-content: center;
+  border-radius: 24px; border: 1px solid var(--tg-gold); background: #2a060d;
+}
+.tg-logo-frame img { height: 118px; width: auto; max-width: 86%; object-fit: contain; filter: drop-shadow(0 0 12px rgba(232,196,104,.3)); }
+.tg-title {
+  margin: 42px 0 0; font-weight: 900; letter-spacing: -0.045em; line-height: .95;
+  font-size: clamp(64px, 11vw, 124px);
+  background: linear-gradient(90deg, #fff8e8 0%, #f6e3a9 55%, #e0b955 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 6px 24px rgba(0,0,0,.45));
+}
+.tg-pill {
+  margin-top: 48px; padding: 14px 38px; border-radius: 999px;
+  border: 1px solid rgba(232,196,104,.45); background: rgba(48,9,16,.82);
+  font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: clamp(11px, 1.7vw, 19px);
+  color: #fff; letter-spacing: .02em; max-width: 100%;
+}
+.tg-pill span { margin: 0 .55em; }
+.tg-pill b { color: var(--tg-gold); }
+.tg-stats { margin-top: 48px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; width: 100%; max-width: 925px; }
+.tg-stat {
+  padding: 20px 14px 18px; border-radius: 18px; border: 1px solid rgba(232,196,104,.3);
+  background: rgba(40,8,14,.8); backdrop-filter: blur(4px);
+}
+.tg-stat small { display: block; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .18em; color: #cbb6b0; }
+.tg-stat strong { display: block; margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: clamp(13px, 1.8vw, 22px); color: var(--tg-gold); }
+.tg-stat strong.is-green { color: var(--tg-green); }
+.tg-cta {
+  margin-top: 52px; display: inline-flex; align-items: center; gap: 12px;
+  padding: 22px 58px; border-radius: 16px; border: 1px solid rgba(232,196,104,.55);
+  background: linear-gradient(90deg, #d4223a 0%, #9a2038 100%);
+  color: #fff; font-weight: 800; font-size: 20px; letter-spacing: .02em; cursor: pointer;
+  box-shadow: 0 10px 50px rgba(212,34,58,.38); transition: transform .18s, box-shadow .18s, filter .18s;
+}
+.tg-cta svg { color: var(--tg-gold); }
+.tg-cta:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 14px 60px rgba(212,34,58,.5); }
+.tg-cta:focus-visible, .tg-btn:focus-visible { outline: 2px solid var(--tg-gold); outline-offset: 3px; }
+
+/* ---------- Màn hình 2: Đăng nhập ---------- */
+.tg-login {
+  background:
+    radial-gradient(ellipse at 85% 5%, rgba(120,24,44,.55) 0%, transparent 55%),
+    linear-gradient(135deg, #2a0710 0%, #3c0b17 45%, #5a1325 100%);
+}
+.tg-login::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+.tg-login-wrap {
+  position: relative; z-index: 1; max-width: 1920px; margin: 0 auto; min-height: 100vh;
+  display: grid; grid-template-columns: minmax(0, 1fr) 576px; gap: 64px; align-items: center;
+  padding: 40px 160px;
+}
+.tg-left { position: relative; display: flex; flex-direction: column; align-self: stretch; padding: 4px 0 8px; }
+.tg-brandcard {
+  display: inline-flex; align-items: center; gap: 22px; align-self: flex-start;
+  padding: 22px 26px; border-radius: 26px; border: 1px solid rgba(232,196,104,.35); background: rgba(40,8,15,.72);
+}
+.tg-brandcard img { height: 64px; width: auto; }
+.tg-brand-title { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 34px; letter-spacing: -.03em; line-height: 1; color: #fff; }
+.tg-badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: .05em; padding: 5px 10px; border-radius: 6px; background: #8f1d33; color: var(--tg-gold); border: 1px solid rgba(232,196,104,.45); }
+.tg-brand-sub { margin-top: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 12px; letter-spacing: .12em; color: var(--tg-gold); }
+.tg-pill-sm {
+  margin-top: 28px; align-self: flex-start; display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 18px; border-radius: 10px; border: 1px solid rgba(232,196,104,.3); background: rgba(48,9,18,.8);
+  font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; color: #f5e9e3;
+}
+.tg-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--tg-gold); flex: none; }
+.tg-hero-title {
+  margin: 24px 0 0; font-weight: 900; letter-spacing: -.05em; line-height: .95; font-size: clamp(64px, 6.2vw, 92px);
+  background: linear-gradient(90deg, #fff8e8 0%, #f1d98c 60%, #e6c56a 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.tg-hero-desc { margin-top: 28px; max-width: 700px; font-size: clamp(16px, 1.45vw, 20px); line-height: 1.55; color: #e9d9d3; position: relative; z-index: 2; }
+.tg-hero-desc b { color: var(--tg-gold); font-weight: 700; }
+.tg-viewport { position: absolute; right: -4%; top: 330px; bottom: 74px; width: 66%; pointer-events: none; z-index: 1; }
+.tg-viewport canvas { width: 100%; height: 100%; display: block; }
+.tg-viewport-cap {
+  position: relative; z-index: 2; margin-top: auto; align-self: flex-start; max-width: 100%;
+  display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 10px;
+  border: 1px solid rgba(232,196,104,.3); background: rgba(40,8,15,.82);
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: .05em; color: #d8c4bd;
+}
+.tg-viewport-cap b { color: #fff; font-weight: 700; }
+.tg-features {
+  position: relative; z-index: 2; margin-top: 28px; padding-top: 22px; border-top: 2px solid rgba(212,34,58,.55);
+  display: flex; flex-wrap: wrap; gap: 18px 48px;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: .08em; color: #fff;
+}
+.tg-features span { display: inline-flex; align-items: center; gap: 10px; }
+.tg-features svg { width: 17px; height: 17px; color: var(--tg-gold); }
+
+/* Card đăng nhập */
+.tg-card {
+  position: relative; z-index: 2; padding: 34px 38px 26px; border-radius: 28px;
+  border: 1px solid rgba(232,196,104,.3); background: var(--tg-panel);
+  backdrop-filter: blur(10px); box-shadow: 0 30px 80px rgba(0,0,0,.4);
+}
+.tg-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.tg-eyebrow { color: var(--tg-gold); font-weight: 700; letter-spacing: .1em; }
+.tg-sysinit { display: inline-flex; align-items: center; gap: 6px; color: #d8c4bd; }
+.tg-card h2 { margin: 18px 0 0; font-weight: 800; font-size: clamp(26px, 2.2vw, 31px); letter-spacing: -.035em; line-height: 1.1; color: #fff; }
+.tg-card .tg-sub { margin-top: 12px; font-size: 16px; line-height: 1.45; color: #dccdc7; }
+.tg-form { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+.tg-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.tg-label { font-size: 14px; font-weight: 600; color: #fff; }
+.tg-label em { font-style: normal; color: var(--tg-gold); }
+.tg-link { background: none; border: 0; padding: 0; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--tg-gold); }
+.tg-link:hover { text-decoration: underline; }
+.tg-input {
+  width: 100%; padding: 17px 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,.1);
+  background: #150508; color: #fff; font-size: 15px; font-family: 'JetBrains Mono', monospace; outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.tg-input::placeholder { color: #7f6a66; }
+.tg-input:focus { border-color: var(--tg-gold); box-shadow: 0 0 0 3px rgba(232,196,104,.16); }
+.tg-form .tg-input + .tg-row, .tg-form .tg-field + .tg-row { margin-top: 12px; }
+.tg-form .tg-input { margin-bottom: 12px; }
+.tg-pw { position: relative; margin-bottom: 4px; }
+.tg-pw .tg-input { margin-bottom: 0; padding-right: 54px; }
+.tg-pw button { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: 0; color: #eadcd6; cursor: pointer; padding: 6px; display: flex; }
+.tg-check { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; color: #f0e3dd; cursor: pointer; }
+.tg-check input { width: 20px; height: 20px; accent-color: #e0284a; cursor: pointer; }
+.tg-auto { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #cbb6b0; }
+.tg-error { padding: 10px 14px; border-radius: 12px; border: 1px solid #ff2a3c; background: rgba(255,42,60,.12); color: #ffc9cf; font-size: 13px; font-weight: 600; }
+.tg-error.hidden { display: none; }
+.tg-btn {
+  margin-top: 8px; width: 100%; padding: 17px; border-radius: 14px; border: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(90deg, #d4223a 0%, #96203a 100%); color: #fff; font-weight: 800; font-size: 16px; letter-spacing: .02em; cursor: pointer;
+  transition: filter .15s, transform .15s;
+}
+.tg-btn:hover { filter: brightness(1.1); }
+.tg-btn:active { transform: translateY(1px); }
+.tg-btn.is-green { background: linear-gradient(90deg, #059669 0%, #047857 100%); }
+.tg-demo { margin-top: 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: #cbb6b0; }
+.tg-demo button { padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(232,196,104,.4); background: rgba(232,196,104,.08); color: var(--tg-gold); font-size: 12px; font-weight: 700; cursor: pointer; }
+.tg-demo button:hover { background: rgba(232,196,104,.18); }
+.tg-demo code { font-family: 'JetBrains Mono', monospace; color: var(--tg-gold); font-weight: 700; }
+.tg-divider { margin: 24px 0 22px; height: 1px; background: rgba(255,255,255,.12); }
+.tg-foot { text-align: center; font-size: 15px; color: #f0e3dd; }
+.tg-foot .tg-link { font-weight: 700; }
+.tg-legal { margin-top: 18px; display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 13px; color: #cbb6b0; }
+.tg-legal button { background: none; border: 0; color: inherit; cursor: pointer; font-size: inherit; }
+.tg-legal button:hover { color: #fff; }
+
+/* Responsive */
+@media (max-width: 1280px) { .tg-login-wrap { padding: 48px 64px; gap: 40px; grid-template-columns: minmax(0, 1fr) 520px; } }
+@media (max-width: 1023px) {
+  .tg-login-wrap { grid-template-columns: 1fr; padding: 28px 18px 40px; gap: 28px; min-height: 0; }
+  .tg-left { align-self: auto; }
+  .tg-brand-title { font-size: 26px; }
+  .tg-hero-title { display: none; }
+  .tg-viewport { position: relative; right: auto; top: auto; bottom: auto; width: 100%; height: 240px; margin-top: 16px; }
+  .tg-viewport-cap { margin-top: 12px; font-size: 10px; }
+  .tg-features { gap: 12px 24px; font-size: 10px; margin-top: 20px; }
+  .tg-card { padding: 28px 22px 24px; order: -1; }
+}
+@media (max-width: 640px) {
+  .tg-stats { grid-template-columns: 1fr; gap: 12px; }
+  .tg-stat { padding: 14px; }
+  .tg-cta { padding: 18px 28px; font-size: 15px; }
+  .tg-title { margin-top: 28px; }
+  .tg-pill { margin-top: 28px; padding: 10px 16px; }
+  .tg-logo-frame > div { height: 150px; }
+  .tg-logo-frame img { height: 84px; }
+}
+@media (prefers-reduced-motion: reduce) { .tg-cta { transition: none; } }
